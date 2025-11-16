@@ -13,7 +13,12 @@ export function Settings() {
     breakPromptInterval: 6,
     audioEnabled: false,
     dyslexiaFont: false,
-    childAge: 6
+    childAge: 6,
+    masteryCriteria: {
+      accuracyThreshold: 80,
+      consecutiveSessionsRequired: 3,
+      minSessionsBeforeMastery: 5
+    }
   });
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
@@ -230,6 +235,111 @@ export function Settings() {
                     }`}
                   />
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Mastery Tracking</h2>
+            <p className="text-sm text-gray-500 mb-6">
+              Configure when skills are considered "mastered" for IEP tracking
+            </p>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Accuracy Threshold: {localSettings.masteryCriteria?.accuracyThreshold || 80}%
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Percentage of correct answers required for mastery
+                </p>
+                <input
+                  type="range"
+                  min="60"
+                  max="100"
+                  step="5"
+                  value={localSettings.masteryCriteria?.accuracyThreshold || 80}
+                  onChange={(e) => {
+                    const newCriteria = {
+                      ...(localSettings.masteryCriteria || {
+                        accuracyThreshold: 80,
+                        consecutiveSessionsRequired: 3,
+                        minSessionsBeforeMastery: 5
+                      }),
+                      accuracyThreshold: parseInt(e.target.value)
+                    };
+                    updateSetting('masteryCriteria', newCriteria);
+                  }}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>60%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Consecutive Sessions Required: {localSettings.masteryCriteria?.consecutiveSessionsRequired || 3}
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Number of consecutive sessions above threshold
+                </p>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value={localSettings.masteryCriteria?.consecutiveSessionsRequired || 3}
+                  onChange={(e) => {
+                    const newCriteria = {
+                      ...(localSettings.masteryCriteria || {
+                        accuracyThreshold: 80,
+                        consecutiveSessionsRequired: 3,
+                        minSessionsBeforeMastery: 5
+                      }),
+                      consecutiveSessionsRequired: parseInt(e.target.value)
+                    };
+                    updateSetting('masteryCriteria', newCriteria);
+                  }}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>1 session</span>
+                  <span>10 sessions</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Minimum Sessions Before Mastery: {localSettings.masteryCriteria?.minSessionsBeforeMastery || 5}
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Minimum total sessions required before skill can be mastered
+                </p>
+                <input
+                  type="range"
+                  min="3"
+                  max="15"
+                  step="1"
+                  value={localSettings.masteryCriteria?.minSessionsBeforeMastery || 5}
+                  onChange={(e) => {
+                    const newCriteria = {
+                      ...(localSettings.masteryCriteria || {
+                        accuracyThreshold: 80,
+                        consecutiveSessionsRequired: 3,
+                        minSessionsBeforeMastery: 5
+                      }),
+                      minSessionsBeforeMastery: parseInt(e.target.value)
+                    };
+                    updateSetting('masteryCriteria', newCriteria);
+                  }}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>3 sessions</span>
+                  <span>15 sessions</span>
+                </div>
               </div>
             </div>
           </div>

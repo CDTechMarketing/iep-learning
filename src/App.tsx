@@ -8,6 +8,9 @@ import { Rewards } from './components/Rewards';
 import { ParentDashboard } from './components/ParentDashboard';
 import { Settings } from './components/Settings';
 import { UnitManagement } from './components/UnitManagement';
+import { IEPGoalsDashboard } from './components/IEPGoalsDashboard';
+import { SkillMasteryView } from './components/SkillMasteryView';
+import { ProgressReport } from './components/ProgressReport';
 
 function App() {
   const { currentView, setSettings } = useStore();
@@ -34,6 +37,9 @@ function App() {
       {currentView === 'dashboard' && <ParentDashboard />}
       {currentView === 'settings' && <Settings />}
       {currentView === 'units' && <UnitManagement />}
+      {currentView === 'iep-goals' && <IEPGoalsDashboard />}
+      {currentView === 'skill-mastery' && <SkillMasteryView />}
+      {currentView === 'progress-report' && <ProgressReport />}
     </div>
   );
 }

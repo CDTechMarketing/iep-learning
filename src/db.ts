@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, SkillMastery, IEPGoal } from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -8,6 +8,8 @@ export class LearningAppDatabase extends Dexie {
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
+  skillMastery!: Table<SkillMastery, string>;
+  iepGoals!: Table<IEPGoal, string>;
 
   constructor() {
     super('LearningAppDB');
@@ -19,6 +21,18 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Version 2: Add mastery tracking tables
+    this.version(2).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      skillMastery: 'id, skillId, category, masteryLevel, dateAchievedMastery',
+      iepGoals: 'id, category, targetDate, createdAt'
     });
   }
 }
@@ -36,8 +50,25 @@ export async function initializeDatabase() {
       breakPromptInterval: 6,
       audioEnabled: false,
       dyslexiaFont: false,
-      childAge: 6
+      childAge: 6,
+      masteryCriteria: {
+        accuracyThreshold: 80,
+        consecutiveSessionsRequired: 3,
+        minSessionsBeforeMastery: 5
+      }
     });
+  } else {
+    // Migrate existing settings to include mastery criteria if not present
+    const settings = await db.settings.get('default');
+    if (settings && !settings.masteryCriteria) {
+      await db.settings.update('default', {
+        masteryCriteria: {
+          accuracyThreshold: 80,
+          consecutiveSessionsRequired: 3,
+          minSessionsBeforeMastery: 5
+        }
+      });
+    }
   }
 
   const unitsCount = await db.units.count();

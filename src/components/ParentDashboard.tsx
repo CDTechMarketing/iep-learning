@@ -470,6 +470,35 @@ export function ParentDashboard() {
           </div>
         </div>
 
+        {/* Navigation Tabs */}
+        <div className="bg-white rounded-2xl shadow-lg p-2 mb-8">
+          <div className="grid grid-cols-4 gap-2">
+            <button
+              className="px-6 py-4 bg-blue-500 text-white rounded-xl font-semibold"
+            >
+              📊 Analytics
+            </button>
+            <button
+              onClick={() => setCurrentView('iep-goals')}
+              className="px-6 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition"
+            >
+              🎯 IEP Goals
+            </button>
+            <button
+              onClick={() => setCurrentView('skill-mastery')}
+              className="px-6 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition"
+            >
+              ⭐ Skill Mastery
+            </button>
+            <button
+              onClick={() => setCurrentView('progress-report')}
+              className="px-6 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition"
+            >
+              📄 Progress Report
+            </button>
+          </div>
+        </div>
+
         {showImportModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">

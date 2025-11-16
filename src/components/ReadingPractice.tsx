@@ -4,6 +4,8 @@ import { db } from '../db';
 import { Phrase } from '../types';
 import { useStore } from '../store';
 import { format } from 'date-fns';
+import { updateMasteryFromSession } from '../utils/masteryTracker';
+import { updateAllGoalsProgress } from '../utils/iepGoalTracker';
 
 export function ReadingPractice() {
   const { currentUnit, sessionStars, addStar, recordAttempt, settings } = useStore();
@@ -111,6 +113,10 @@ export function ReadingPractice() {
     };
 
     await db.sessionLogs.add(sessionLog);
+
+    // Update mastery tracking and IEP goals progress
+    await updateMasteryFromSession(sessionLog);
+    await updateAllGoalsProgress();
 
     useStore.setState({ currentView: 'rewards' });
   }
