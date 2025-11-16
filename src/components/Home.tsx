@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
+import { BookOpen, Calculator, Microscope, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
 import { useStore } from '../store';
@@ -25,6 +25,11 @@ export function Home() {
   function handleStartMath(unit: Unit) {
     setCurrentUnit(unit);
     setCurrentView('math');
+  }
+
+  function handleStartScience(unit: Unit) {
+    setCurrentUnit(unit);
+    setCurrentView('science');
   }
 
   return (
@@ -59,7 +64,7 @@ export function Home() {
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                       <button
                         onClick={() => handleStartReading(unit)}
                         className="flex flex-col items-center gap-3 p-6 bg-gradient-to-br from-green-400 to-green-500 text-white rounded-2xl hover:from-green-500 hover:to-green-600 transition-all transform hover:scale-105 shadow-lg"
@@ -74,6 +79,14 @@ export function Home() {
                       >
                         <Calculator className="w-12 h-12" />
                         <span className="text-xl font-bold">Math</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleStartScience(unit)}
+                        className="flex flex-col items-center gap-3 p-6 bg-gradient-to-br from-pink-400 to-pink-500 text-white rounded-2xl hover:from-pink-500 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg"
+                      >
+                        <Microscope className="w-12 h-12" />
+                        <span className="text-xl font-bold">Science</span>
                       </button>
                     </div>
 

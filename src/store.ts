@@ -3,7 +3,7 @@ import { Unit, AppSettings } from './types';
 
 interface AppState {
   currentUnit: Unit | null;
-  currentView: 'home' | 'reading' | 'math' | 'rewards' | 'dashboard' | 'settings';
+  currentView: 'home' | 'reading' | 'math' | 'science' | 'rewards' | 'dashboard' | 'settings' | 'units';
   sessionStars: number;
   sessionAttempts: number;
   sessionCorrect: number;

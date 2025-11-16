@@ -1,10 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { Unit, Phrase, MathProblem, ScienceProblem, SessionLog, Reward, AppSettings } from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
   phrases!: Table<Phrase, string>;
   mathProblems!: Table<MathProblem, string>;
+  scienceProblems!: Table<ScienceProblem, string>;
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
@@ -16,6 +17,7 @@ export class LearningAppDatabase extends Dexie {
       units: 'id, createdAt',
       phrases: 'id, unitId',
       mathProblems: 'id, unitId, type',
+      scienceProblems: 'id, unitId, type, topic',
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
@@ -113,6 +115,97 @@ async function seedInitialData() {
   ];
 
   await db.mathProblems.bulkAdd(mathProblems);
+
+  const scienceProblems: ScienceProblem[] = [
+    {
+      id: `${unitId}-sci-1`,
+      unitId,
+      type: 'force',
+      topic: 'push-pull',
+      question: 'What happens when you push a box?',
+      demoType: 'interactive',
+      correctAnswer: 'moves away',
+      options: ['moves away', 'stays still', 'comes closer', 'disappears'],
+      explanation: 'When you push something, it moves away from you!'
+    },
+    {
+      id: `${unitId}-sci-2`,
+      unitId,
+      type: 'force',
+      topic: 'push-pull',
+      question: 'What happens when you pull a wagon?',
+      demoType: 'interactive',
+      correctAnswer: 'comes closer',
+      options: ['comes closer', 'stays still', 'moves away', 'flies up'],
+      explanation: 'When you pull something, it comes toward you!'
+    },
+    {
+      id: `${unitId}-sci-3`,
+      unitId,
+      type: 'simple-machine',
+      topic: 'lever',
+      question: 'A seesaw is an example of which simple machine?',
+      demoType: 'observation',
+      correctAnswer: 'lever',
+      options: ['lever', 'pulley', 'wheel and axle', 'wedge'],
+      explanation: 'A lever helps us lift things more easily!'
+    },
+    {
+      id: `${unitId}-sci-4`,
+      unitId,
+      type: 'simple-machine',
+      topic: 'pulley',
+      question: 'What simple machine helps you raise a flag?',
+      demoType: 'observation',
+      correctAnswer: 'pulley',
+      options: ['pulley', 'lever', 'inclined plane', 'screw'],
+      explanation: 'A pulley uses a wheel and rope to lift things!'
+    },
+    {
+      id: `${unitId}-sci-5`,
+      unitId,
+      type: 'simple-machine',
+      topic: 'wheel-axle',
+      question: 'What simple machine do we use on cars and bikes?',
+      demoType: 'observation',
+      correctAnswer: 'wheel and axle',
+      options: ['wheel and axle', 'wedge', 'screw', 'lever'],
+      explanation: 'Wheels and axles help things roll smoothly!'
+    },
+    {
+      id: `${unitId}-sci-6`,
+      unitId,
+      type: 'simple-machine',
+      topic: 'inclined-plane',
+      question: 'A ramp is an example of which simple machine?',
+      demoType: 'observation',
+      correctAnswer: 'inclined plane',
+      options: ['inclined plane', 'pulley', 'lever', 'screw'],
+      explanation: 'An inclined plane makes it easier to move things up or down!'
+    },
+    {
+      id: `${unitId}-sci-7`,
+      unitId,
+      type: 'multiple-choice',
+      topic: 'push-pull',
+      question: 'Which action is a PUSH?',
+      correctAnswer: 'closing a door',
+      options: ['closing a door', 'opening a drawer', 'pulling a sled', 'tying a rope'],
+      explanation: 'Pushing moves something away from you!'
+    },
+    {
+      id: `${unitId}-sci-8`,
+      unitId,
+      type: 'multiple-choice',
+      topic: 'push-pull',
+      question: 'Which action is a PULL?',
+      correctAnswer: 'opening a drawer',
+      options: ['opening a drawer', 'pushing a swing', 'kicking a ball', 'throwing a toy'],
+      explanation: 'Pulling brings something toward you!'
+    }
+  ];
+
+  await db.scienceProblems.bulkAdd(scienceProblems);
 
   const rewards: Reward[] = [
     { id: 'reward-1', name: 'Star', iconPath: '⭐', milestone: 0 },

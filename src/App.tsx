@@ -4,6 +4,7 @@ import { initializeDatabase, db } from './db';
 import { Home } from './components/Home';
 import { ReadingPractice } from './components/ReadingPractice';
 import { MathPractice } from './components/MathPractice';
+import { SciencePractice } from './components/SciencePractice';
 import { Rewards } from './components/Rewards';
 import { ParentDashboard } from './components/ParentDashboard';
 import { Settings } from './components/Settings';
@@ -30,6 +31,7 @@ function App() {
       {currentView === 'home' && <Home />}
       {currentView === 'reading' && <ReadingPractice />}
       {currentView === 'math' && <MathPractice />}
+      {currentView === 'science' && <SciencePractice />}
       {currentView === 'rewards' && <Rewards />}
       {currentView === 'dashboard' && <ParentDashboard />}
       {currentView === 'settings' && <Settings />}

@@ -21,6 +21,18 @@ export interface MathProblem {
   manipulatives?: 'blocks' | 'icons';
 }
 
+export interface ScienceProblem {
+  id: string;
+  unitId: string;
+  type: 'force' | 'simple-machine' | 'multiple-choice';
+  topic: 'push-pull' | 'lever' | 'pulley' | 'wheel-axle' | 'inclined-plane' | 'wedge' | 'screw';
+  question: string;
+  demoType?: 'interactive' | 'observation';
+  correctAnswer: string;
+  options?: string[];
+  explanation?: string;
+}
+
 export interface SessionLog {
   id: string;
   unitId: string;
