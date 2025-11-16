@@ -120,6 +120,43 @@ async function seedInitialData() {
 
   await db.mathProblems.bulkAdd(mathProblems);
 
+  // Create a special unit for counting 20-29
+  const counting2029UnitId = 'counting-20-29-001';
+  const counting2029Unit: Unit = {
+    id: counting2029UnitId,
+    title: 'Counting 20-29',
+    tags: ['counting', 'number-sense', '20-29', 'place-value'],
+    goalStars: [5, 10, 15],
+    createdAt: new Date()
+  };
+
+  await db.units.add(counting2029Unit);
+
+  const counting2029Problems: MathProblem[] = [
+    // Number Line Activities
+    { id: `${counting2029UnitId}-nl-1`, unitId: counting2029UnitId, type: 'number-line', prompt: 'Find 23', answer: 23, rangeStart: 20, rangeEnd: 29 },
+    { id: `${counting2029UnitId}-nl-2`, unitId: counting2029UnitId, type: 'number-line', prompt: 'Find 26', answer: 26, rangeStart: 20, rangeEnd: 29 },
+    { id: `${counting2029UnitId}-nl-3`, unitId: counting2029UnitId, type: 'number-line', prompt: 'Find 21', answer: 21, rangeStart: 20, rangeEnd: 29 },
+    { id: `${counting2029UnitId}-nl-4`, unitId: counting2029UnitId, type: 'number-line', prompt: 'Find 28', answer: 28, rangeStart: 20, rangeEnd: 29 },
+    { id: `${counting2029UnitId}-nl-5`, unitId: counting2029UnitId, type: 'number-line', prompt: 'Find 24', answer: 24, rangeStart: 20, rangeEnd: 29 },
+
+    // Ten Frame Activities
+    { id: `${counting2029UnitId}-tf-1`, unitId: counting2029UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 23, options: [21, 23, 24, 13] },
+    { id: `${counting2029UnitId}-tf-2`, unitId: counting2029UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 25, options: [25, 24, 26, 15] },
+    { id: `${counting2029UnitId}-tf-3`, unitId: counting2029UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 27, options: [27, 26, 28, 17] },
+    { id: `${counting2029UnitId}-tf-4`, unitId: counting2029UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 22, options: [22, 21, 23, 12] },
+    { id: `${counting2029UnitId}-tf-5`, unitId: counting2029UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 29, options: [29, 28, 27, 19] },
+
+    // Touch and Count Activities
+    { id: `${counting2029UnitId}-tc-1`, unitId: counting2029UnitId, type: 'touch-count', prompt: 'Count the stars!', answer: 23, manipulatives: 'stars' },
+    { id: `${counting2029UnitId}-tc-2`, unitId: counting2029UnitId, type: 'touch-count', prompt: 'Count the bears!', answer: 25, manipulatives: 'animals' },
+    { id: `${counting2029UnitId}-tc-3`, unitId: counting2029UnitId, type: 'touch-count', prompt: 'Count the stars!', answer: 27, manipulatives: 'stars' },
+    { id: `${counting2029UnitId}-tc-4`, unitId: counting2029UnitId, type: 'touch-count', prompt: 'Count the bears!', answer: 21, manipulatives: 'animals' },
+    { id: `${counting2029UnitId}-tc-5`, unitId: counting2029UnitId, type: 'touch-count', prompt: 'Count the stars!', answer: 29, manipulatives: 'stars' }
+  ];
+
+  await db.mathProblems.bulkAdd(counting2029Problems);
+
   const rewards: Reward[] = [
     { id: 'reward-1', name: 'Star', iconPath: '⭐', milestone: 0 },
     { id: 'reward-2', name: 'Cat', iconPath: '🐱', milestone: 5 },

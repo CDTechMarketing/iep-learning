@@ -15,10 +15,13 @@ export interface Phrase {
 export interface MathProblem {
   id: string;
   unitId: string;
-  type: 'identification' | 'addition';
+  type: 'identification' | 'addition' | 'number-line' | 'ten-frame' | 'touch-count' | 'number-order' | 'one-more-less';
   prompt: string;
   answer: number;
-  manipulatives?: 'blocks' | 'icons';
+  manipulatives?: 'blocks' | 'icons' | 'stars' | 'animals';
+  rangeStart?: number;
+  rangeEnd?: number;
+  options?: number[];
 }
 
 export interface SessionLog {

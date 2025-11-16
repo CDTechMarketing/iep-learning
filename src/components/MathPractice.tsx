@@ -4,6 +4,11 @@ import { db } from '../db';
 import { MathProblem } from '../types';
 import { useStore } from '../store';
 import { format } from 'date-fns';
+import { NumberLineActivity } from './NumberLineActivity';
+import { TenFrameActivity } from './TenFrameActivity';
+import { TouchCountActivity } from './TouchCountActivity';
+import { VisualTimer } from './VisualTimer';
+import { ImmediateReward } from './ImmediateReward';
 
 export function MathPractice() {
   const { currentUnit, sessionStars, addStar, recordAttempt, settings } = useStore();
@@ -15,6 +20,7 @@ export function MathPractice() {
   const [showBreakPrompt, setShowBreakPrompt] = useState(false);
   const [itemsCompleted, setItemsCompleted] = useState(0);
   const [blockCounts, setBlockCounts] = useState<number[]>([]);
+  const [showImmediateReward, setShowImmediateReward] = useState(false);
 
   useEffect(() => {
     if (currentUnit) {
@@ -91,6 +97,29 @@ export function MathPractice() {
     setTimeout(() => {
       handleNextProblem();
     }, 1500);
+  }
+
+  function handleNewActivityAnswer(correct: boolean) {
+    recordAttempt(correct);
+
+    if (correct) {
+      addStar();
+
+      // Show immediate reward if enabled
+      if (settings?.immediateRewards) {
+        setShowImmediateReward(true);
+        return; // Reward component will call handleNextProblem
+      }
+    }
+
+    setTimeout(() => {
+      handleNextProblem();
+    }, 1500);
+  }
+
+  function handleImmediateRewardComplete() {
+    setShowImmediateReward(false);
+    handleNextProblem();
   }
 
   function handleNextProblem() {
@@ -225,12 +254,102 @@ export function MathPractice() {
 
   const answerOptions = generateAnswerOptions(currentProblem.answer, currentProblem.type);
 
+  const promptingLevel = settings?.promptingLevel || 'adaptive';
+  const audioEnabled = settings?.audioEnabled || false;
+
+  // Render new activity types
+  function renderActivityContent() {
+    switch (currentProblem.type) {
+      case 'number-line':
+        return (
+          <NumberLineActivity
+            problem={currentProblem}
+            onAnswer={handleNewActivityAnswer}
+            promptingLevel={promptingLevel}
+            audioEnabled={audioEnabled}
+          />
+        );
+
+      case 'ten-frame':
+        return (
+          <TenFrameActivity
+            problem={currentProblem}
+            onAnswer={handleNewActivityAnswer}
+            promptingLevel={promptingLevel}
+            audioEnabled={audioEnabled}
+          />
+        );
+
+      case 'touch-count':
+        return (
+          <TouchCountActivity
+            problem={currentProblem}
+            onAnswer={handleNewActivityAnswer}
+            audioEnabled={audioEnabled}
+          />
+        );
+
+      default:
+        // Render original identification and addition activities
+        return renderOriginalActivity();
+    }
+  }
+
+  function renderOriginalActivity() {
+    return (
+      <div className="bg-white rounded-3xl shadow-2xl p-16 max-w-4xl w-full">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-700 mb-4">
+            {currentProblem.type === 'identification'
+              ? 'What number is this?'
+              : 'What is the answer?'}
+          </h2>
+          <p className="text-8xl font-bold text-blue-900 mb-4">{currentProblem.prompt}</p>
+        </div>
+
+        {renderManipulatives()}
+
+        <div className="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
+          {answerOptions.map((option) => (
+            <button
+              key={option}
+              onClick={() => handleAnswerSelect(option)}
+              disabled={showFeedback}
+              className={`p-8 text-5xl font-bold rounded-2xl transition-all transform hover:scale-105 disabled:cursor-not-allowed ${
+                showFeedback && option === currentProblem.answer
+                  ? 'bg-green-500 text-white shadow-2xl'
+                  : showFeedback && option === selectedAnswer
+                  ? 'bg-red-400 text-white'
+                  : 'bg-white border-4 border-gray-300 text-gray-800 hover:border-blue-400 hover:shadow-lg'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+        {showFeedback && (
+          <div className="mt-8 text-center">
+            <p
+              className={`text-3xl font-bold ${
+                isCorrect ? 'text-green-600' : 'text-blue-600'
+              }`}
+            >
+              {isCorrect ? '🎉 Great job!' : '👍 Keep trying!'}
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex flex-col p-8 ${
         settings?.dyslexiaFont ? 'font-mono' : ''
       }`}
     >
+      {/* Header with Stars and Progress */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-2">
           {Array.from({ length: sessionStars }).map((_, i) => (
@@ -243,50 +362,25 @@ export function MathPractice() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center">
-        <div className="bg-white rounded-3xl shadow-2xl p-16 max-w-4xl w-full">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-700 mb-4">
-              {currentProblem.type === 'identification'
-                ? 'What number is this?'
-                : 'What is the answer?'}
-            </h2>
-            <p className="text-8xl font-bold text-blue-900 mb-4">{currentProblem.prompt}</p>
-          </div>
-
-          {renderManipulatives()}
-
-          <div className="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {answerOptions.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleAnswerSelect(option)}
-                disabled={showFeedback}
-                className={`p-8 text-5xl font-bold rounded-2xl transition-all transform hover:scale-105 disabled:cursor-not-allowed ${
-                  showFeedback && option === currentProblem.answer
-                    ? 'bg-green-500 text-white shadow-2xl'
-                    : showFeedback && option === selectedAnswer
-                    ? 'bg-red-400 text-white'
-                    : 'bg-white border-4 border-gray-300 text-gray-800 hover:border-blue-400 hover:shadow-lg'
-                }`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-
-          {showFeedback && (
-            <div className="mt-8 text-center">
-              <p
-                className={`text-3xl font-bold ${
-                  isCorrect ? 'text-green-600' : 'text-blue-600'
-                }`}
-              >
-                {isCorrect ? '🎉 Great job!' : '👍 Keep trying!'}
-              </p>
-            </div>
-          )}
+      {/* Visual Timer (if enabled) */}
+      {settings?.visualTimerEnabled && (
+        <div className="mb-6">
+          <VisualTimer
+            current={currentProblemIndex + 1}
+            total={problems.length}
+            label="Math Problems"
+            showTimeEstimate={false}
+          />
         </div>
+      )}
+
+      {/* Immediate Reward Overlay */}
+      {showImmediateReward && (
+        <ImmediateReward onComplete={handleImmediateRewardComplete} />
+      )}
+
+      <div className="flex-1 flex items-center justify-center">
+        {renderActivityContent()}
       </div>
     </div>
   );
