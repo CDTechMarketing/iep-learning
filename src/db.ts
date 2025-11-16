@@ -1,10 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, ScienceProblem } from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
   phrases!: Table<Phrase, string>;
   mathProblems!: Table<MathProblem, string>;
+  scienceProblems!: Table<ScienceProblem, string>;
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
@@ -12,10 +13,22 @@ export class LearningAppDatabase extends Dexie {
   constructor() {
     super('LearningAppDB');
 
+    // Version 1 schema
     this.version(1).stores({
       units: 'id, createdAt',
       phrases: 'id, unitId',
       mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id'
+    });
+
+    // Version 2: Add science problems
+    this.version(2).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      scienceProblems: 'id, unitId, type, machineType',
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'

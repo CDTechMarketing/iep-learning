@@ -76,3 +76,16 @@ export interface SessionPlan {
   currentActivityIndex: number;
   createdAt: Date;
 }
+
+export interface ScienceProblem {
+  id: string;
+  unitId: string;
+  type: 'simple-machine' | 'force' | 'compound-machine' | 'machine-identify';
+  machineType?: 'lever' | 'wheel-axle' | 'pulley' | 'inclined-plane' | 'wedge' | 'screw';
+  prompt: string;
+  question: string;
+  correctAnswer: string;
+  options?: string[];
+  description?: string;
+  examples?: string[];
+}
