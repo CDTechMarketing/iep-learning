@@ -12,17 +12,36 @@ import { SessionSchedule } from './components/SessionSchedule';
 import { ActivityPreview } from './components/ActivityPreview';
 import { SensoryBreak } from './components/SensoryBreak';
 import { StudentProgress } from './components/StudentProgress';
+import { logger } from './utils/logger';
 
 function App() {
   const { currentView, setSettings } = useStore();
 
   useEffect(() => {
     async function init() {
-      await initializeDatabase();
+      const startTime = performance.now();
 
-      const settings = await db.settings.get('default');
-      if (settings) {
-        setSettings(settings);
+      try {
+        logger.info('app', 'Application initializing...');
+
+        await initializeDatabase();
+        logger.info('app', 'Database initialized successfully');
+
+        const settings = await db.settings.get('default');
+        if (settings) {
+          setSettings(settings);
+          logger.info('app', 'Settings loaded', { settingsId: settings.id });
+        } else {
+          logger.warn('app', 'No settings found in database');
+        }
+
+        const initTime = performance.now() - startTime;
+        logger.performance('app-initialization', initTime);
+        logger.info('app', `Application ready (${Math.round(initTime)}ms)`);
+      } catch (error) {
+        logger.critical('app', 'Failed to initialize application', error as Error);
+        // Still throw to trigger Error Boundary
+        throw error;
       }
     }
 

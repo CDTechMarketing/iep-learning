@@ -4,6 +4,7 @@ import { db } from '../db';
 import { SessionLog, Unit, Phrase, MathProblem } from '../types';
 import { useStore } from '../store';
 import { parseUnitMarkdown, validateMarkdown } from '../utils/unitImporter';
+import { DebugPanel } from './DebugPanel';
 import {
   BarChart,
   Bar,
@@ -730,6 +731,11 @@ goal-stars: [10, 20, 30]
               No cumulative data available for this selection
             </p>
           )}
+        </div>
+
+        {/* Debug & Error Logs Section */}
+        <div className="mt-8">
+          <DebugPanel />
         </div>
       </div>
     </div>

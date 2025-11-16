@@ -1,5 +1,6 @@
 import Dexie, { Table } from 'dexie';
 import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, ScienceProblem } from './types';
+import type { LogEntry } from './utils/logger';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -9,6 +10,7 @@ export class LearningAppDatabase extends Dexie {
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
+  logs!: Table<LogEntry, number>;
 
   constructor() {
     super('LearningAppDB');
@@ -32,6 +34,18 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Version 3: Add error logging and debugging
+    this.version(3).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      scienceProblems: 'id, unitId, type, machineType',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      logs: '++id, timestamp, level, category'
     });
   }
 }
