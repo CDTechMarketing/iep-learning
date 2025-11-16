@@ -11,7 +11,7 @@ import { VisualTimer } from './VisualTimer';
 import { ImmediateReward } from './ImmediateReward';
 
 export function MathPractice() {
-  const { currentUnit, sessionStars, addStar, recordAttempt, settings } = useStore();
+  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView, setCurrentSessionLog } = useStore();
   const [problems, setProblems] = useState<MathProblem[]>([]);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -171,7 +171,9 @@ export function MathPractice() {
 
     await db.sessionLogs.add(sessionLog);
 
-    useStore.setState({ currentView: 'rewards' });
+    // Save session log to store and show summary
+    setCurrentSessionLog(sessionLog);
+    setCurrentView('session-summary');
   }
 
   function handleBlockClick(index: number) {

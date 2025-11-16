@@ -111,6 +111,20 @@ export function Home() {
             <p className="text-2xl text-gray-600">Choose an activity to get started</p>
           </div>
 
+          {/* Choice Board Button - Prominent */}
+          <div className="mb-12">
+            <button
+              onClick={() => setCurrentView('choice-boards')}
+              className="w-full flex items-center justify-center gap-4 p-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-3xl shadow-xl hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105"
+            >
+              <span className="text-6xl">🎨</span>
+              <div className="text-left">
+                <div className="text-4xl font-bold">Choose Your Activities</div>
+                <div className="text-2xl opacity-90">Pick what you want to do today!</div>
+              </div>
+            </button>
+          </div>
+
           <div className="mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">Practice Units</h2>
 

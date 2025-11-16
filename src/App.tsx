@@ -12,6 +12,8 @@ import { SessionSchedule } from './components/SessionSchedule';
 import { ActivityPreview } from './components/ActivityPreview';
 import { SensoryBreak } from './components/SensoryBreak';
 import { StudentProgress } from './components/StudentProgress';
+import { ChoiceBoards } from './components/ChoiceBoards';
+import { SessionSummary } from './components/SessionSummary';
 import { logger } from './utils/logger';
 
 function App() {
@@ -58,6 +60,8 @@ function App() {
       {currentView === 'break' && <SensoryBreak />}
       {currentView === 'rewards' && <Rewards />}
       {currentView === 'progress' && <StudentProgress />}
+      {currentView === 'choice-boards' && <ChoiceBoards />}
+      {currentView === 'session-summary' && <SessionSummary />}
       {currentView === 'dashboard' && <ParentDashboard />}
       {currentView === 'settings' && <Settings />}
       {currentView === 'units' && <UnitManagement />}

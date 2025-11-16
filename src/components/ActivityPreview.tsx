@@ -1,16 +1,47 @@
 import { useStore } from '../store';
-import { SessionActivity } from '../types';
+import { SessionActivity, SessionLog } from '../types';
+import { db } from '../db';
+import { format } from 'date-fns';
 
 export function ActivityPreview() {
-  const { sessionPlan, setCurrentView, updateActivityStatus } = useStore();
+  const {
+    sessionPlan,
+    currentUnit,
+    sessionStars,
+    sessionAttempts,
+    sessionCorrect,
+    setCurrentView,
+    updateActivityStatus,
+    setCurrentSessionLog
+  } = useStore();
 
   if (!sessionPlan) return null;
 
   const currentActivity = sessionPlan.activities[sessionPlan.currentActivityIndex];
 
   if (!currentActivity) {
-    // All activities completed, show rewards
-    setCurrentView('rewards');
+    // All activities completed, create session log and show summary
+    if (currentUnit) {
+      const sessionLog: SessionLog = {
+        id: `session-${Date.now()}`,
+        unitId: currentUnit.id,
+        date: format(new Date(), 'yyyy-MM-dd'),
+        starsEarned: sessionStars,
+        attempts: sessionAttempts,
+        correct: sessionCorrect,
+        milestonesReached: currentUnit.goalStars.filter(goal => sessionStars >= goal),
+        createdAt: new Date()
+      };
+
+      // Save to database and store
+      db.sessionLogs.add(sessionLog).then(() => {
+        setCurrentSessionLog(sessionLog);
+        setCurrentView('session-summary');
+      });
+    } else {
+      // Fallback if no unit (shouldn't happen)
+      setCurrentView('rewards');
+    }
     return null;
   }
 

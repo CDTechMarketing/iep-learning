@@ -6,7 +6,7 @@ import { useStore } from '../store';
 import { format } from 'date-fns';
 
 export function ReadingPractice() {
-  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView } = useStore();
+  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView, setCurrentSessionLog } = useStore();
   const [phrases, setPhrases] = useState<Phrase[]>([]);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
@@ -112,7 +112,9 @@ export function ReadingPractice() {
 
     await db.sessionLogs.add(sessionLog);
 
-    useStore.setState({ currentView: 'rewards' });
+    // Save session log to store and show summary
+    setCurrentSessionLog(sessionLog);
+    setCurrentView('session-summary');
   }
 
   function speakText(text: string) {

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useStore } from '../store';
+import { logger } from '../utils/logger';
 
 interface ChoiceBoardsProps {
-  onComplete: (choices: ActivityChoice[]) => void;
+  onComplete?: (choices: ActivityChoice[]) => void;
 }
 
 interface ActivityChoice {
@@ -14,7 +15,7 @@ interface ActivityChoice {
 }
 
 export function ChoiceBoards({ onComplete }: ChoiceBoardsProps) {
-  const { settings } = useStore();
+  const { settings, setActivityChoices, setCurrentView } = useStore();
 
   const [activities, setActivities] = useState<ActivityChoice[]>([
     {
@@ -62,7 +63,7 @@ export function ChoiceBoards({ onComplete }: ChoiceBoardsProps) {
       if (selectedActivities.length > 1) {
         setStep('order');
       } else {
-        onComplete(selectedActivities);
+        finishSelection(selectedActivities);
       }
     }
   };
@@ -82,13 +83,42 @@ export function ChoiceBoards({ onComplete }: ChoiceBoardsProps) {
   };
 
   const handleComplete = () => {
-    onComplete(orderedActivities);
+    finishSelection(orderedActivities);
+  };
+
+  const finishSelection = (choices: ActivityChoice[]) => {
+    const activityTypes = choices.map(c => c.type);
+
+    // Save choices to store
+    setActivityChoices(activityTypes, activityTypes);
+
+    // Log the selection
+    logger.info('choice-boards', 'Activities selected', {
+      count: activityTypes.length,
+      activities: activityTypes
+    });
+
+    // Call onComplete if provided (for legacy usage)
+    if (onComplete) {
+      onComplete(choices);
+    } else {
+      // Navigate back to home to select a unit
+      setCurrentView('home');
+    }
   };
 
   if (step === 'order') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-8">
         <div className="max-w-3xl mx-auto">
+
+          {/* Back Button */}
+          <button
+            onClick={() => setStep('activities')}
+            className="mb-6 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition text-xl font-semibold"
+          >
+            ← Back
+          </button>
 
           <div className="text-center mb-12">
             <h1 className="text-6xl font-bold text-gray-800 mb-4">
@@ -168,6 +198,14 @@ export function ChoiceBoards({ onComplete }: ChoiceBoardsProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-8">
       <div className="max-w-5xl mx-auto">
+
+        {/* Back Button */}
+        <button
+          onClick={() => setCurrentView('home')}
+          className="mb-6 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition text-xl font-semibold"
+        >
+          ← Back to Home
+        </button>
 
         <div className="text-center mb-12">
           <h1 className="text-6xl font-bold text-gray-800 mb-4">
