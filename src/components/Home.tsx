@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
+import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen, MessageSquare, Heart, AlertCircle } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
 import { useStore } from '../store';
@@ -96,6 +96,40 @@ export function Home() {
             )}
           </div>
 
+          {/* AAC Communication Section */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Communication Tools 🗣️</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <button
+                onClick={() => setCurrentView('communication')}
+                className="flex flex-col items-center justify-center gap-4 p-8 bg-gradient-to-br from-purple-400 to-purple-500 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              >
+                <MessageSquare className="w-16 h-16" />
+                <span className="text-2xl font-bold">Communication Board</span>
+                <span className="text-sm opacity-90">Express yourself with pictures</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('feelings')}
+                className="flex flex-col items-center justify-center gap-4 p-8 bg-gradient-to-br from-pink-400 to-pink-500 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              >
+                <Heart className="w-16 h-16" />
+                <span className="text-2xl font-bold">Feelings Check-In</span>
+                <span className="text-sm opacity-90">Share how you're feeling</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('needs')}
+                className="flex flex-col items-center justify-center gap-4 p-8 bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              >
+                <AlertCircle className="w-16 h-16" />
+                <span className="text-2xl font-bold">I Need...</span>
+                <span className="text-sm opacity-90">Tell us what you need</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Settings & Management */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
               onClick={() => setCurrentView('dashboard')}
