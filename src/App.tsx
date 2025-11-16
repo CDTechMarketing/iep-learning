@@ -11,6 +11,7 @@ import { UnitManagement } from './components/UnitManagement';
 import { SessionSchedule } from './components/SessionSchedule';
 import { ActivityPreview } from './components/ActivityPreview';
 import { SensoryBreak } from './components/SensoryBreak';
+import { StudentProgress } from './components/StudentProgress';
 
 function App() {
   const { currentView, setSettings } = useStore();
@@ -37,6 +38,7 @@ function App() {
       {currentView === 'math' && <MathPractice />}
       {currentView === 'break' && <SensoryBreak />}
       {currentView === 'rewards' && <Rewards />}
+      {currentView === 'progress' && <StudentProgress />}
       {currentView === 'dashboard' && <ParentDashboard />}
       {currentView === 'settings' && <Settings />}
       {currentView === 'units' && <UnitManagement />}

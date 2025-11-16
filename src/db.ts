@@ -170,6 +170,129 @@ async function seedInitialData() {
 
   await db.mathProblems.bulkAdd(counting2029Problems);
 
+  // Additional CVC Reading Units - Short A (-an family)
+  const shortAnUnitId = 'short-a-an-001';
+  const shortAnUnit: Unit = {
+    id: shortAnUnitId,
+    title: 'Short A — Can, Man, Fan',
+    tags: ['cvc', 'short-a', '-an'],
+    goalStars: [5, 10],
+    createdAt: new Date()
+  };
+  await db.units.add(shortAnUnit);
+
+  const shortAnPhrases: Phrase[] = [
+    { id: `${shortAnUnitId}-phrase-1`, unitId: shortAnUnitId, lines: ['can'] },
+    { id: `${shortAnUnitId}-phrase-2`, unitId: shortAnUnitId, lines: ['man'] },
+    { id: `${shortAnUnitId}-phrase-3`, unitId: shortAnUnitId, lines: ['fan'] },
+    { id: `${shortAnUnitId}-phrase-4`, unitId: shortAnUnitId, lines: ['the', 'the man'] },
+    { id: `${shortAnUnitId}-phrase-5`, unitId: shortAnUnitId, lines: ['the', 'the man', 'the man can'] },
+    { id: `${shortAnUnitId}-phrase-6`, unitId: shortAnUnitId, lines: ['a fan', 'the man', 'the man can'] },
+    { id: `${shortAnUnitId}-phrase-7`, unitId: shortAnUnitId, lines: ['I can', 'I can see', 'I can see the fan'] }
+  ];
+  await db.phrases.bulkAdd(shortAnPhrases);
+
+  // Short I (-ig family)
+  const shortIgUnitId = 'short-i-ig-001';
+  const shortIgUnit: Unit = {
+    id: shortIgUnitId,
+    title: 'Short I — Pig, Dig, Big',
+    tags: ['cvc', 'short-i', '-ig'],
+    goalStars: [5, 10],
+    createdAt: new Date()
+  };
+  await db.units.add(shortIgUnit);
+
+  const shortIgPhrases: Phrase[] = [
+    { id: `${shortIgUnitId}-phrase-1`, unitId: shortIgUnitId, lines: ['pig'] },
+    { id: `${shortIgUnitId}-phrase-2`, unitId: shortIgUnitId, lines: ['dig'] },
+    { id: `${shortIgUnitId}-phrase-3`, unitId: shortIgUnitId, lines: ['big'] },
+    { id: `${shortIgUnitId}-phrase-4`, unitId: shortIgUnitId, lines: ['a pig', 'a big pig'] },
+    { id: `${shortIgUnitId}-phrase-5`, unitId: shortIgUnitId, lines: ['the pig', 'the pig can dig'] },
+    { id: `${shortIgUnitId}-phrase-6`, unitId: shortIgUnitId, lines: ['see the', 'see the big', 'see the big pig'] },
+    { id: `${shortIgUnitId}-phrase-7`, unitId: shortIgUnitId, lines: ['I see', 'I see a', 'I see a big pig dig'] }
+  ];
+  await db.phrases.bulkAdd(shortIgPhrases);
+
+  // Short O (-og family)
+  const shortOgUnitId = 'short-o-og-001';
+  const shortOgUnit: Unit = {
+    id: shortOgUnitId,
+    title: 'Short O — Dog, Log, Frog',
+    tags: ['cvc', 'short-o', '-og'],
+    goalStars: [5, 10],
+    createdAt: new Date()
+  };
+  await db.units.add(shortOgUnit);
+
+  const shortOgPhrases: Phrase[] = [
+    { id: `${shortOgUnitId}-phrase-1`, unitId: shortOgUnitId, lines: ['dog'] },
+    { id: `${shortOgUnitId}-phrase-2`, unitId: shortOgUnitId, lines: ['log'] },
+    { id: `${shortOgUnitId}-phrase-3`, unitId: shortOgUnitId, lines: ['frog'] },
+    { id: `${shortOgUnitId}-phrase-4`, unitId: shortOgUnitId, lines: ['a dog', 'on a log'] },
+    { id: `${shortOgUnitId}-phrase-5`, unitId: shortOgUnitId, lines: ['the frog', 'the frog and', 'the frog and dog'] },
+    { id: `${shortOgUnitId}-phrase-6`, unitId: shortOgUnitId, lines: ['the dog', 'the dog is on', 'the dog is on the log'] },
+    { id: `${shortOgUnitId}-phrase-7`, unitId: shortOgUnitId, lines: ['I see a', 'I see a frog', 'I see a frog on a log'] }
+  ];
+  await db.phrases.bulkAdd(shortOgPhrases);
+
+  // Short U (-ug family)
+  const shortUgUnitId = 'short-u-ug-001';
+  const shortUgUnit: Unit = {
+    id: shortUgUnitId,
+    title: 'Short U — Bug, Hug, Rug',
+    tags: ['cvc', 'short-u', '-ug'],
+    goalStars: [5, 10],
+    createdAt: new Date()
+  };
+  await db.units.add(shortUgUnit);
+
+  const shortUgPhrases: Phrase[] = [
+    { id: `${shortUgUnitId}-phrase-1`, unitId: shortUgUnitId, lines: ['bug'] },
+    { id: `${shortUgUnitId}-phrase-2`, unitId: shortUgUnitId, lines: ['hug'] },
+    { id: `${shortUgUnitId}-phrase-3`, unitId: shortUgUnitId, lines: ['rug'] },
+    { id: `${shortUgUnitId}-phrase-4`, unitId: shortUgUnitId, lines: ['a bug', 'on the rug'] },
+    { id: `${shortUgUnitId}-phrase-5`, unitId: shortUgUnitId, lines: ['I see', 'I see the bug'] },
+    { id: `${shortUgUnitId}-phrase-6`, unitId: shortUgUnitId, lines: ['the bug', 'the bug is', 'the bug is on the rug'] },
+    { id: `${shortUgUnitId}-phrase-7`, unitId: shortUgUnitId, lines: ['give me', 'give me a hug'] }
+  ];
+  await db.phrases.bulkAdd(shortUgPhrases);
+
+  // Counting 30-39 Unit
+  const counting3039UnitId = 'counting-30-39-001';
+  const counting3039Unit: Unit = {
+    id: counting3039UnitId,
+    title: 'Counting 30-39',
+    tags: ['counting', 'number-sense', '30-39', 'place-value'],
+    goalStars: [5, 10, 15],
+    createdAt: new Date()
+  };
+  await db.units.add(counting3039Unit);
+
+  const counting3039Problems: MathProblem[] = [
+    // Number Line Activities
+    { id: `${counting3039UnitId}-nl-1`, unitId: counting3039UnitId, type: 'number-line', prompt: 'Find 33', answer: 33, rangeStart: 30, rangeEnd: 39 },
+    { id: `${counting3039UnitId}-nl-2`, unitId: counting3039UnitId, type: 'number-line', prompt: 'Find 36', answer: 36, rangeStart: 30, rangeEnd: 39 },
+    { id: `${counting3039UnitId}-nl-3`, unitId: counting3039UnitId, type: 'number-line', prompt: 'Find 31', answer: 31, rangeStart: 30, rangeEnd: 39 },
+    { id: `${counting3039UnitId}-nl-4`, unitId: counting3039UnitId, type: 'number-line', prompt: 'Find 38', answer: 38, rangeStart: 30, rangeEnd: 39 },
+    { id: `${counting3039UnitId}-nl-5`, unitId: counting3039UnitId, type: 'number-line', prompt: 'Find 35', answer: 35, rangeStart: 30, rangeEnd: 39 },
+
+    // Ten Frame Activities
+    { id: `${counting3039UnitId}-tf-1`, unitId: counting3039UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 33, options: [31, 33, 34, 23] },
+    { id: `${counting3039UnitId}-tf-2`, unitId: counting3039UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 35, options: [35, 34, 36, 25] },
+    { id: `${counting3039UnitId}-tf-3`, unitId: counting3039UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 37, options: [37, 36, 38, 27] },
+    { id: `${counting3039UnitId}-tf-4`, unitId: counting3039UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 32, options: [32, 31, 33, 22] },
+    { id: `${counting3039UnitId}-tf-5`, unitId: counting3039UnitId, type: 'ten-frame', prompt: 'How many dots?', answer: 39, options: [39, 38, 37, 29] },
+
+    // Touch and Count Activities
+    { id: `${counting3039UnitId}-tc-1`, unitId: counting3039UnitId, type: 'touch-count', prompt: 'Count the stars!', answer: 33, manipulatives: 'stars' },
+    { id: `${counting3039UnitId}-tc-2`, unitId: counting3039UnitId, type: 'touch-count', prompt: 'Count the bears!', answer: 35, manipulatives: 'animals' },
+    { id: `${counting3039UnitId}-tc-3`, unitId: counting3039UnitId, type: 'touch-count', prompt: 'Count the stars!', answer: 37, manipulatives: 'stars' },
+    { id: `${counting3039UnitId}-tc-4`, unitId: counting3039UnitId, type: 'touch-count', prompt: 'Count the bears!', answer: 31, manipulatives: 'animals' },
+    { id: `${counting3039UnitId}-tc-5`, unitId: counting3039UnitId, type: 'touch-count', prompt: 'Count the stars!', answer: 39, manipulatives: 'stars' }
+  ];
+  await db.mathProblems.bulkAdd(counting3039Problems);
+
   const rewards: Reward[] = [
     { id: 'reward-1', name: 'Star', iconPath: '⭐', milestone: 0 },
     { id: 'reward-2', name: 'Cat', iconPath: '🐱', milestone: 5 },

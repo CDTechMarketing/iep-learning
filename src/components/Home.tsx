@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
+import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen, Trophy } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
 import { useStore } from '../store';
@@ -185,7 +185,15 @@ export function Home() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <button
+              onClick={() => setCurrentView('progress')}
+              className="flex items-center justify-center gap-4 p-8 bg-gradient-to-br from-yellow-400 to-orange-500 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            >
+              <Trophy className="w-10 h-10" />
+              <span className="text-2xl font-bold">My Progress</span>
+            </button>
+
             <button
               onClick={() => setCurrentView('dashboard')}
               className="flex items-center justify-center gap-4 p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
