@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, ErrorCorrectionLog } from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -8,6 +8,7 @@ export class LearningAppDatabase extends Dexie {
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
+  errorCorrections!: Table<ErrorCorrectionLog, string>;
 
   constructor() {
     super('LearningAppDB');
@@ -19,6 +20,17 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Version 2: Add error correction tracking
+    this.version(2).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      errorCorrections: 'id, sessionLogId, problemType, timestamp'
     });
   }
 }
@@ -36,8 +48,33 @@ export async function initializeDatabase() {
       breakPromptInterval: 6,
       audioEnabled: false,
       dyslexiaFont: false,
-      childAge: 6
+      childAge: 6,
+      errorCorrection: {
+        enabled: true,
+        showModel: true,
+        showLead: true,
+        modelDuration: 3,
+        leadDuration: 3,
+        maxCycles: 2,
+        celebrateCorrection: true
+      }
     });
+  } else {
+    // Migrate existing settings to include error correction defaults
+    const existingSettings = await db.settings.get('default');
+    if (existingSettings && !existingSettings.errorCorrection) {
+      await db.settings.update('default', {
+        errorCorrection: {
+          enabled: true,
+          showModel: true,
+          showLead: true,
+          modelDuration: 3,
+          leadDuration: 3,
+          maxCycles: 2,
+          celebrateCorrection: true
+        }
+      });
+    }
   }
 
   const unitsCount = await db.units.count();

@@ -13,7 +13,16 @@ export function Settings() {
     breakPromptInterval: 6,
     audioEnabled: false,
     dyslexiaFont: false,
-    childAge: 6
+    childAge: 6,
+    errorCorrection: {
+      enabled: true,
+      showModel: true,
+      showLead: true,
+      modelDuration: 3,
+      leadDuration: 3,
+      maxCycles: 2,
+      celebrateCorrection: true
+    }
   });
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
@@ -235,6 +244,152 @@ export function Settings() {
           </div>
 
           <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Error Correction (Model-Lead-Test)</h2>
+            <p className="text-gray-600 mb-6">
+              Evidence-based ABA approach that teaches the correct answer when a mistake is made.
+            </p>
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Enable Error Correction
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Use Model-Lead-Test when student makes a mistake
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('errorCorrection', {
+                    ...localSettings.errorCorrection!,
+                    enabled: !localSettings.errorCorrection?.enabled
+                  })}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.errorCorrection?.enabled ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.errorCorrection?.enabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {localSettings.errorCorrection?.enabled && (
+                <>
+                  <div>
+                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                      Model Duration: {localSettings.errorCorrection?.modelDuration}s
+                    </label>
+                    <p className="text-sm text-gray-500 mb-2">
+                      How long to show the correct answer (Step 1: Model)
+                    </p>
+                    <input
+                      type="range"
+                      min="2"
+                      max="10"
+                      step="1"
+                      value={localSettings.errorCorrection?.modelDuration}
+                      onChange={(e) =>
+                        updateSetting('errorCorrection', {
+                          ...localSettings.errorCorrection!,
+                          modelDuration: parseInt(e.target.value)
+                        })
+                      }
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>2s</span>
+                      <span>10s</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                      Lead Duration: {localSettings.errorCorrection?.leadDuration}s
+                    </label>
+                    <p className="text-sm text-gray-500 mb-2">
+                      How long to guide to the answer (Step 2: Lead)
+                    </p>
+                    <input
+                      type="range"
+                      min="2"
+                      max="10"
+                      step="1"
+                      value={localSettings.errorCorrection?.leadDuration}
+                      onChange={(e) =>
+                        updateSetting('errorCorrection', {
+                          ...localSettings.errorCorrection!,
+                          leadDuration: parseInt(e.target.value)
+                        })
+                      }
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>2s</span>
+                      <span>10s</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                      Maximum Correction Cycles: {localSettings.errorCorrection?.maxCycles}
+                    </label>
+                    <p className="text-sm text-gray-500 mb-2">
+                      How many times to repeat correction if still incorrect
+                    </p>
+                    <input
+                      type="range"
+                      min="1"
+                      max="3"
+                      step="1"
+                      value={localSettings.errorCorrection?.maxCycles}
+                      onChange={(e) =>
+                        updateSetting('errorCorrection', {
+                          ...localSettings.errorCorrection!,
+                          maxCycles: parseInt(e.target.value)
+                        })
+                      }
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>1 cycle</span>
+                      <span>3 cycles</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block text-lg font-medium text-gray-700 mb-1">
+                        Celebrate Correction
+                      </label>
+                      <p className="text-sm text-gray-500">
+                        Award a star when student gets it right after correction
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('errorCorrection', {
+                        ...localSettings.errorCorrection!,
+                        celebrateCorrection: !localSettings.errorCorrection?.celebrateCorrection
+                      })}
+                      className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                        localSettings.errorCorrection?.celebrateCorrection ? 'bg-blue-500' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                          localSettings.errorCorrection?.celebrateCorrection ? 'translate-x-7' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Design Principles</h2>
             <div className="space-y-2 text-gray-600">
               <p>✓ Large, high-contrast text for readability</p>
@@ -242,6 +397,7 @@ export function Settings() {
               <p>✓ Calm color palette to reduce anxiety</p>
               <p>✓ Gentle animations without flashing</p>
               <p>✓ Positive reinforcement, no penalties</p>
+              <p>✓ Evidence-based error correction (Model-Lead-Test)</p>
             </div>
           </div>
         </div>

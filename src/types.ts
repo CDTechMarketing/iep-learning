@@ -39,6 +39,18 @@ export interface Reward {
   milestone: number;
 }
 
+export interface ErrorCorrectionLog {
+  id: string;
+  sessionLogId: string;
+  problemId: string;
+  problemType: string;
+  incorrectAnswer: string | number;
+  correctAnswer: string | number;
+  correctionCyclesNeeded: number;
+  finallyCorrect: boolean;
+  timestamp: Date;
+}
+
 export interface AppSettings {
   id: string;
   autoAdvance: boolean;
@@ -48,4 +60,13 @@ export interface AppSettings {
   dyslexiaFont: boolean;
   parentPasscode?: string;
   childAge: number;
+  errorCorrection?: {
+    enabled: boolean;
+    showModel: boolean;
+    showLead: boolean;
+    modelDuration: number;
+    leadDuration: number;
+    maxCycles: number;
+    celebrateCorrection: boolean;
+  };
 }

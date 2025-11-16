@@ -4,6 +4,9 @@ import { db } from '../db';
 import { MathProblem } from '../types';
 import { useStore } from '../store';
 import { format } from 'date-fns';
+import { ErrorCorrection } from './ErrorCorrection';
+import { NumberLineVisual } from './visualAids/NumberLineVisual';
+import { TenFrameVisual } from './visualAids/TenFrameVisual';
 
 export function MathPractice() {
   const { currentUnit, sessionStars, addStar, recordAttempt, settings } = useStore();
@@ -15,6 +18,9 @@ export function MathPractice() {
   const [showBreakPrompt, setShowBreakPrompt] = useState(false);
   const [itemsCompleted, setItemsCompleted] = useState(0);
   const [blockCounts, setBlockCounts] = useState<number[]>([]);
+  const [showErrorCorrection, setShowErrorCorrection] = useState(false);
+  const [incorrectAnswer, setIncorrectAnswer] = useState<number | null>(null);
+  const [currentSessionLogId, setCurrentSessionLogId] = useState<string>(`session-${Date.now()}`);
 
   useEffect(() => {
     if (currentUnit) {
@@ -86,11 +92,49 @@ export function MathPractice() {
 
     if (correct) {
       addStar();
+      setTimeout(() => {
+        handleNextProblem();
+      }, 1500);
+    } else {
+      // Check if error correction is enabled
+      if (settings?.errorCorrection?.enabled) {
+        setIncorrectAnswer(answer);
+        setTimeout(() => {
+          setShowFeedback(false);
+          setShowErrorCorrection(true);
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          handleNextProblem();
+        }, 1500);
+      }
+    }
+  }
+
+  async function handleErrorCorrectionComplete(finallyCorrect: boolean, cyclesNeeded: number) {
+    // Log the error correction
+    await db.errorCorrections.add({
+      id: `error-${Date.now()}`,
+      sessionLogId: currentSessionLogId,
+      problemId: currentProblem.id,
+      problemType: 'math',
+      incorrectAnswer: incorrectAnswer!,
+      correctAnswer: currentProblem.answer,
+      correctionCyclesNeeded: cyclesNeeded,
+      finallyCorrect,
+      timestamp: new Date()
+    });
+
+    // Award star if finally correct
+    if (finallyCorrect && settings?.errorCorrection?.celebrateCorrection) {
+      addStar();
     }
 
-    setTimeout(() => {
-      handleNextProblem();
-    }, 1500);
+    // Reset and move to next problem
+    setShowErrorCorrection(false);
+    setIncorrectAnswer(null);
+    setSelectedAnswer(null);
+    handleNextProblem();
   }
 
   function handleNextProblem() {
@@ -202,6 +246,27 @@ export function MathPractice() {
           Tap to count: {blockCounts.length} / {total}
         </p>
       </div>
+    );
+  }
+
+  // Show Error Correction if enabled and wrong answer
+  if (showErrorCorrection && incorrectAnswer !== null) {
+    const visualAid = currentProblem.type === 'identification' && currentProblem.answer <= 30
+      ? <NumberLineVisual range={[Math.max(0, currentProblem.answer - 5), currentProblem.answer + 5]} highlighted={currentProblem.answer} animated={true} />
+      : currentProblem.type === 'addition' && currentProblem.answer <= 20
+      ? <TenFrameVisual number={currentProblem.answer} animated={true} />
+      : undefined;
+
+    return (
+      <ErrorCorrection
+        problemType="math"
+        correctAnswer={currentProblem.answer}
+        incorrectAnswer={incorrectAnswer}
+        question={currentProblem.prompt}
+        allOptions={generateAnswerOptions(currentProblem.answer, currentProblem.type)}
+        visualAid={visualAid}
+        onComplete={handleErrorCorrectionComplete}
+      />
     );
   }
 
