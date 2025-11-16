@@ -5,7 +5,7 @@ import { Unit } from '../types';
 import { useStore } from '../store';
 
 export function Home() {
-  const { setCurrentUnit, setCurrentView } = useStore();
+  const { setCurrentUnit, setCurrentView, setSessionPlan, settings, resetSession } = useStore();
   const [units, setUnits] = useState<Unit[]>([]);
 
   useEffect(() => {
@@ -17,14 +17,89 @@ export function Home() {
     setUnits(unitsData);
   }
 
-  function handleStartReading(unit: Unit) {
-    setCurrentUnit(unit);
-    setCurrentView('reading');
+  async function createSessionPlan(unit: Unit, startWith: 'reading' | 'math' | 'full') {
+    const phrases = await db.phrases.where('unitId').equals(unit.id).toArray();
+    const mathProblems = await db.mathProblems.where('unitId').equals(unit.id).toArray();
+
+    const activities = [];
+
+    if (startWith === 'reading' || startWith === 'full') {
+      activities.push({
+        id: `${unit.id}-reading`,
+        type: 'reading' as const,
+        title: 'Reading Practice',
+        icon: '📖',
+        estimatedItems: phrases.length,
+        starsToEarn: Math.ceil(phrases.length / 2),
+        status: 'pending' as const
+      });
+    }
+
+    if (startWith === 'math' || startWith === 'full') {
+      activities.push({
+        id: `${unit.id}-math`,
+        type: 'math' as const,
+        title: 'Math Practice',
+        icon: '🔢',
+        estimatedItems: mathProblems.length,
+        starsToEarn: Math.ceil(mathProblems.length / 2),
+        status: 'pending' as const
+      });
+    }
+
+    // Always add rewards at the end
+    activities.push({
+      id: `${unit.id}-rewards`,
+      type: 'rewards' as const,
+      title: 'Get Your Rewards!',
+      icon: '🎁',
+      estimatedItems: 1,
+      starsToEarn: 0,
+      status: 'pending' as const
+    });
+
+    return {
+      id: `session-${Date.now()}`,
+      unitId: unit.id,
+      activities,
+      currentActivityIndex: 0,
+      createdAt: new Date()
+    };
   }
 
-  function handleStartMath(unit: Unit) {
+  async function handleStartReading(unit: Unit) {
     setCurrentUnit(unit);
-    setCurrentView('math');
+    resetSession();
+
+    if (settings?.visualScheduleEnabled) {
+      const plan = await createSessionPlan(unit, 'reading');
+      setSessionPlan(plan);
+      setCurrentView('schedule');
+    } else {
+      setCurrentView('reading');
+    }
+  }
+
+  async function handleStartMath(unit: Unit) {
+    setCurrentUnit(unit);
+    resetSession();
+
+    if (settings?.visualScheduleEnabled) {
+      const plan = await createSessionPlan(unit, 'math');
+      setSessionPlan(plan);
+      setCurrentView('schedule');
+    } else {
+      setCurrentView('math');
+    }
+  }
+
+  async function handleStartFull(unit: Unit) {
+    setCurrentUnit(unit);
+    resetSession();
+
+    const plan = await createSessionPlan(unit, 'full');
+    setSessionPlan(plan);
+    setCurrentView('schedule');
   }
 
   return (
@@ -59,22 +134,36 @@ export function Home() {
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <button
-                        onClick={() => handleStartReading(unit)}
-                        className="flex flex-col items-center gap-3 p-6 bg-gradient-to-br from-green-400 to-green-500 text-white rounded-2xl hover:from-green-500 hover:to-green-600 transition-all transform hover:scale-105 shadow-lg"
-                      >
-                        <BookOpen className="w-12 h-12" />
-                        <span className="text-xl font-bold">Reading</span>
-                      </button>
+                    <div className="space-y-4">
+                      {/* Full Session Button (if visual schedule is enabled) */}
+                      {settings?.visualScheduleEnabled && (
+                        <button
+                          onClick={() => handleStartFull(unit)}
+                          className="w-full flex items-center justify-center gap-3 p-6 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
+                        >
+                          <span className="text-4xl">🎯</span>
+                          <span className="text-xl font-bold">Full Learning Session</span>
+                        </button>
+                      )}
 
-                      <button
-                        onClick={() => handleStartMath(unit)}
-                        className="flex flex-col items-center gap-3 p-6 bg-gradient-to-br from-purple-400 to-purple-500 text-white rounded-2xl hover:from-purple-500 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg"
-                      >
-                        <Calculator className="w-12 h-12" />
-                        <span className="text-xl font-bold">Math</span>
-                      </button>
+                      {/* Individual Activity Buttons */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          onClick={() => handleStartReading(unit)}
+                          className="flex flex-col items-center gap-3 p-6 bg-gradient-to-br from-green-400 to-green-500 text-white rounded-2xl hover:from-green-500 hover:to-green-600 transition-all transform hover:scale-105 shadow-lg"
+                        >
+                          <BookOpen className="w-12 h-12" />
+                          <span className="text-xl font-bold">Reading</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleStartMath(unit)}
+                          className="flex flex-col items-center gap-3 p-6 bg-gradient-to-br from-purple-400 to-purple-500 text-white rounded-2xl hover:from-purple-500 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg"
+                        >
+                          <Calculator className="w-12 h-12" />
+                          <span className="text-xl font-bold">Math</span>
+                        </button>
+                      </div>
                     </div>
 
                     <div className="mt-4 text-center text-gray-600">

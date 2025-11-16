@@ -8,6 +8,8 @@ import { Rewards } from './components/Rewards';
 import { ParentDashboard } from './components/ParentDashboard';
 import { Settings } from './components/Settings';
 import { UnitManagement } from './components/UnitManagement';
+import { SessionSchedule } from './components/SessionSchedule';
+import { ActivityPreview } from './components/ActivityPreview';
 
 function App() {
   const { currentView, setSettings } = useStore();
@@ -28,6 +30,8 @@ function App() {
   return (
     <div className="min-h-screen">
       {currentView === 'home' && <Home />}
+      {currentView === 'schedule' && <SessionSchedule />}
+      {currentView === 'preview' && <ActivityPreview />}
       {currentView === 'reading' && <ReadingPractice />}
       {currentView === 'math' && <MathPractice />}
       {currentView === 'rewards' && <Rewards />}

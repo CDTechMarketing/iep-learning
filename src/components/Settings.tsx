@@ -13,7 +13,13 @@ export function Settings() {
     breakPromptInterval: 6,
     audioEnabled: false,
     dyslexiaFont: false,
-    childAge: 6
+    childAge: 8,
+    visualScheduleEnabled: true,
+    visualTimerEnabled: true,
+    immediateRewards: true,
+    promptingLevel: 'adaptive',
+    colorScheme: 'default',
+    animationLevel: 'reduced'
   });
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
@@ -178,6 +184,138 @@ export function Settings() {
                   <span>3 items</span>
                   <span>15 items</span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Special Needs Support</h2>
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Visual Schedule
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Show activity plan before starting (reduces anxiety)
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('visualScheduleEnabled', !localSettings.visualScheduleEnabled)}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.visualScheduleEnabled ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.visualScheduleEnabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Visual Timer
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Show progress bars during activities
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('visualTimerEnabled', !localSettings.visualTimerEnabled)}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.visualTimerEnabled ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.visualTimerEnabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Immediate Rewards
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Show celebration after each correct answer
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('immediateRewards', !localSettings.immediateRewards)}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.immediateRewards ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.immediateRewards ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Prompting Level
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  How much help to provide (errorless learning)
+                </p>
+                <select
+                  value={localSettings.promptingLevel}
+                  onChange={(e) => updateSetting('promptingLevel', e.target.value as AppSettings['promptingLevel'])}
+                  className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="full">Full Prompts (always show hints)</option>
+                  <option value="partial">Partial Prompts (some hints)</option>
+                  <option value="minimal">Minimal Prompts (gentle hints)</option>
+                  <option value="independent">Independent (no prompts)</option>
+                  <option value="adaptive">Adaptive (adjusts automatically)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Animation Level
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Reduce animations if they're distracting
+                </p>
+                <select
+                  value={localSettings.animationLevel}
+                  onChange={(e) => updateSetting('animationLevel', e.target.value as AppSettings['animationLevel'])}
+                  className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="full">Full Animations</option>
+                  <option value="reduced">Reduced Animations (recommended)</option>
+                  <option value="none">No Animations</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Color Scheme
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Adjust colors for visual comfort
+                </p>
+                <select
+                  value={localSettings.colorScheme}
+                  onChange={(e) => updateSetting('colorScheme', e.target.value as AppSettings['colorScheme'])}
+                  className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="default">Default (colorful gradients)</option>
+                  <option value="high-contrast">High Contrast (easier to see)</option>
+                  <option value="pastel">Soft Pastels (calming)</option>
+                  <option value="grayscale">Grayscale (reduce stimulation)</option>
+                </select>
               </div>
             </div>
           </div>

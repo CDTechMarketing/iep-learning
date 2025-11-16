@@ -36,7 +36,13 @@ export async function initializeDatabase() {
       breakPromptInterval: 6,
       audioEnabled: false,
       dyslexiaFont: false,
-      childAge: 6
+      childAge: 8,
+      visualScheduleEnabled: true,
+      visualTimerEnabled: true,
+      immediateRewards: true,
+      promptingLevel: 'adaptive',
+      colorScheme: 'default',
+      animationLevel: 'reduced'
     });
   }
 
