@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, TwoDigitMathProblem, TwoDigitMathAttempt, MathStrategy, RegroupingError } from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -8,6 +8,10 @@ export class LearningAppDatabase extends Dexie {
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
+  // Two-Digit Math Tables (Agent 6)
+  twoDigitMathProblems!: Table<TwoDigitMathProblem, string>;
+  twoDigitMathAttempts!: Table<TwoDigitMathAttempt, string>;
+  mathStrategies!: Table<MathStrategy, string>;
 
   constructor() {
     super('LearningAppDB');
@@ -19,6 +23,19 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Version 2: Add Two-Digit Math tables
+    this.version(2).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      twoDigitMathProblems: 'id, operation, difficulty, requiresRegrouping',
+      twoDigitMathAttempts: 'id, studentId, problemId, timestamp, isCorrect',
+      mathStrategies: 'id, operation, strategyName'
     });
   }
 }
