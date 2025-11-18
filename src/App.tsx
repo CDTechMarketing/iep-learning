@@ -8,6 +8,7 @@ import { Rewards } from './components/Rewards';
 import { ParentDashboard } from './components/ParentDashboard';
 import { Settings } from './components/Settings';
 import { UnitManagement } from './components/UnitManagement';
+import ReadingComprehensionPractice from './components/ReadingComprehensionPractice';
 
 function App() {
   const { currentView, setSettings } = useStore();
@@ -30,6 +31,12 @@ function App() {
       {currentView === 'home' && <Home />}
       {currentView === 'reading' && <ReadingPractice />}
       {currentView === 'math' && <MathPractice />}
+      {currentView === 'comprehension' && (
+        <ReadingComprehensionPractice
+          onExit={() => useStore.getState().setCurrentView('home')}
+          studentId="default-student"
+        />
+      )}
       {currentView === 'rewards' && <Rewards />}
       {currentView === 'dashboard' && <ParentDashboard />}
       {currentView === 'settings' && <Settings />}

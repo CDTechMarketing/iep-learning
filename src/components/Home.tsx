@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
+import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen, BookMarked } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
 import { useStore } from '../store';
@@ -34,6 +34,31 @@ export function Home() {
           <div className="text-center mb-12">
             <h1 className="text-6xl font-bold text-gray-800 mb-4">Learning Time!</h1>
             <p className="text-2xl text-gray-600">Choose an activity to get started</p>
+          </div>
+
+          {/* Featured: Reading Comprehension */}
+          <div className="mb-12">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl shadow-2xl p-8 text-white">
+              <div className="flex items-center justify-between flex-wrap gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="p-4 bg-white bg-opacity-20 rounded-2xl">
+                    <BookMarked size={48} />
+                  </div>
+                  <div>
+                    <h2 className="text-4xl font-bold mb-2">Reading Comprehension</h2>
+                    <p className="text-xl text-blue-100">
+                      Build understanding and reading skills with engaging passages
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCurrentView('comprehension')}
+                  className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-xl hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg"
+                >
+                  Start Reading →
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="mb-12">
