@@ -1,10 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, SkillMastery, IEPGoal } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, SkillMastery, IEPGoal, FractionProblem } from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
   phrases!: Table<Phrase, string>;
   mathProblems!: Table<MathProblem, string>;
+  fractionProblems!: Table<FractionProblem, string>;
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;

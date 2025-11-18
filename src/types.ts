@@ -15,10 +15,30 @@ export interface Phrase {
 export interface MathProblem {
   id: string;
   unitId: string;
-  type: 'identification' | 'addition';
+  type: 'identification' | 'addition' | 'number-line' | 'ten-frame' | 'touch-count' | 'place-value' | 'comparison' | 'ordering';
   prompt: string;
   answer: number;
-  manipulatives?: 'blocks' | 'icons';
+  manipulatives?: 'blocks' | 'icons' | 'stars' | 'animals';
+  options?: number[] | string[];
+
+  // For number range activities
+  rangeStart?: number;
+  rangeEnd?: number;
+
+  // For place value activities
+  placeValueType?: 'build' | 'identify' | 'expanded-form';
+  tens?: number;
+  ones?: number;
+
+  // For comparison activities
+  comparisonType?: 'greater' | 'less' | 'equal';
+  number1?: number;
+  number2?: number;
+  correctSymbol?: string;
+
+  // For ordering activities
+  numbersToOrder?: number[];
+  orderDirection?: 'ascending' | 'descending';
 }
 
 export interface SessionLog {
@@ -83,4 +103,37 @@ export interface IEPGoal {
   targetValue: number;
   createdAt: Date;
   notes?: string;
+}
+
+export interface FractionProblem {
+  id: string;
+  unitId: string;
+  type: 'fraction-identification' | 'fraction-comparison' | 'fraction-matching' | 'fraction-real-world' | 'fraction-coloring';
+  prompt: string;
+  answer: number; // Index of correct answer for multiple choice
+
+  // Fraction data
+  numerator: number;
+  denominator: number; // Limited to: 2, 3, 4, 5, 6, 8, 10
+
+  // Visual representation
+  visualType: 'circle' | 'rectangle' | 'bar' | 'set' | 'real-world';
+  shadedParts: number;
+  totalParts: number;
+
+  // For comparison activities
+  fraction2?: {
+    numerator: number;
+    denominator: number;
+    shadedParts: number;
+  };
+
+  // For matching activities
+  options?: string[]; // Fraction text options: ["1/2", "1/3", "1/4", "1/5"]
+
+  // For real-world activities
+  realWorldContext?: 'pizza' | 'cookies' | 'shapes' | 'fruit';
+  imageUrl?: string;
+
+  createdAt?: Date;
 }
