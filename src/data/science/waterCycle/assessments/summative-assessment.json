@@ -1,0 +1,98 @@
+{
+  "id": "water-cycle-summative",
+  "unitId": "water-cycle-unit",
+  "assessmentType": "summative",
+  "questions": [
+    {
+      "id": "sum-q1",
+      "questionText": "Label the water cycle diagram. Drag the correct labels to each part:",
+      "questionType": "label-diagram",
+      "correctAnswer": ["Evaporation", "Condensation", "Precipitation", "Collection"],
+      "imageUrl": "/images/assessments/water-cycle-diagram.jpg",
+      "explanation": "Great job! The water cycle has four main parts: evaporation (water turning to vapor), condensation (vapor forming clouds), precipitation (water falling from clouds), and collection (water gathering in oceans and lakes).",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q2",
+      "questionText": "Put the water cycle steps in the correct order:",
+      "questionType": "drag-and-drop",
+      "correctAnswer": ["Water collects in ocean", "Sun heats water", "Water evaporates", "Water vapor rises", "Vapor cools and condenses", "Clouds form", "Precipitation falls", "Water returns to ocean"],
+      "explanation": "Perfect! You understand the water cycle sequence. Water moves in a continuous cycle from Earth to the atmosphere and back again.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q3",
+      "questionText": "Match each vocabulary word to its definition:",
+      "questionType": "drag-and-drop",
+      "correctAnswer": {
+        "Evaporation": "Water turning from liquid to gas",
+        "Condensation": "Water vapor turning into droplets",
+        "Precipitation": "Water falling from clouds",
+        "Collection": "Water gathering in lakes and oceans",
+        "Water vapor": "Water in gas form"
+      },
+      "explanation": "Excellent vocabulary knowledge! These are the key terms of the water cycle.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q4",
+      "questionText": "Which of these are types of precipitation? Check all that apply:",
+      "questionType": "multiple-choice",
+      "correctAnswer": ["Rain", "Snow", "Hail", "Sleet"],
+      "distractors": ["Clouds", "Fog", "Steam", "Dew"],
+      "explanation": "Correct! Precipitation is water that falls from clouds. Rain, snow, hail, and sleet are all types of precipitation.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q5",
+      "questionText": "True or False: Clouds are made of cotton balls.",
+      "questionType": "true-false",
+      "correctAnswer": "False",
+      "explanation": "False! Clouds are made of millions of tiny water droplets, not cotton balls.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q6",
+      "questionText": "True or False: The sun's heat causes water to evaporate.",
+      "questionType": "true-false",
+      "correctAnswer": "True",
+      "explanation": "True! The sun provides the heat energy that causes water to evaporate.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q7",
+      "questionText": "What happens to water vapor when it rises high in the sky and gets cold?",
+      "questionType": "multiple-choice",
+      "correctAnswer": "It condenses into tiny water droplets",
+      "distractors": ["It disappears completely", "It turns into ice immediately", "It falls as rain"],
+      "explanation": "Correct! When water vapor rises and cools, it condenses into tiny water droplets that form clouds.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q8",
+      "questionText": "Why do puddles disappear on sunny days?",
+      "questionType": "multiple-choice",
+      "correctAnswer": "The sun heats the water and it evaporates",
+      "distractors": ["The water soaks into the ground completely", "Animals drink all the water", "The wind blows it away"],
+      "explanation": "Great thinking! Puddles disappear because the sun's heat causes the water to evaporate into water vapor.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q9",
+      "questionText": "What is the correct definition of precipitation?",
+      "questionType": "multiple-choice",
+      "correctAnswer": "Water that falls from clouds to the ground",
+      "distractors": ["Water turning into vapor", "Clouds forming in the sky", "Water collecting in oceans"],
+      "explanation": "Perfect! Precipitation is any form of water that falls from clouds, including rain, snow, sleet, and hail.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "sum-q10",
+      "questionText": "Draw and label a complete water cycle showing evaporation, condensation, precipitation, and collection:",
+      "questionType": "draw-and-explain",
+      "correctAnswer": "Drawing with all 4 stages labeled correctly",
+      "explanation": "Excellent work! You can now draw and explain the complete water cycle!",
+      "solStandard": "3.9"
+    }
+  ]
+}

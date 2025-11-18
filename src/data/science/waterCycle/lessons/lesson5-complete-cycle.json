@@ -1,0 +1,92 @@
+{
+  "id": "water-cycle-lesson-5",
+  "unitId": "water-cycle-unit",
+  "lessonNumber": 5,
+  "title": "The Complete Water Cycle",
+  "learningObjective": "Students will describe the complete water cycle sequence: evaporation, condensation, precipitation, and collection",
+  "materials": [
+    "Water cycle diagram",
+    "Arrows for sequencing",
+    "Drawing materials"
+  ],
+  "procedure": [
+    {
+      "stepNumber": 1,
+      "instruction": "Watch the video 'The Water Cycle Journey' showing the complete process.",
+      "duration": 5,
+      "studentAction": "watch",
+      "scaffoldingSupports": [
+        "Pause after each stage: evaporation, condensation, precipitation, collection",
+        "Ask: 'What happens next?'",
+        "Review all vocabulary"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "instruction": "Drag arrows to show how water moves through the water cycle.",
+      "duration": 5,
+      "studentAction": "label",
+      "scaffoldingSupports": [
+        "Start with: Water in ocean/lake",
+        "Then: Sun heats water → evaporation",
+        "Then: Water vapor rises → condensation → clouds",
+        "Then: Clouds release water → precipitation",
+        "Finally: Water collects in ocean/lake again"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "instruction": "Label the complete water cycle diagram with 6 labels: sun, evaporation, water vapor, condensation, precipitation, collection.",
+      "duration": 6,
+      "studentAction": "label",
+      "scaffoldingSupports": [
+        "Provide word bank",
+        "Show where each label should go with arrows",
+        "Check each label before moving to next"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "instruction": "Play the virtual lab: 'Be a Water Droplet' - click through each stage of the water cycle.",
+      "duration": 6,
+      "studentAction": "observe",
+      "scaffoldingSupports": [
+        "Guide through each stage",
+        "Ask: 'Where are you now? What's happening to you?'",
+        "Celebrate completing the full cycle"
+      ]
+    }
+  ],
+  "multimediaResources": [
+    {
+      "id": "water-cycle-complete-video",
+      "type": "video",
+      "url": "https://example.com/complete-water-cycle",
+      "duration": 5,
+      "caption": "Follow a water droplet through the entire water cycle",
+      "accessibilityDescription": "Video showing the complete water cycle from ocean through evaporation, cloud formation, precipitation, and back to ocean"
+    },
+    {
+      "id": "water-cycle-diagram",
+      "type": "interactive-diagram",
+      "url": "/interactives/water-cycle-label",
+      "caption": "Label the water cycle diagram",
+      "accessibilityDescription": "Interactive water cycle diagram with drag-and-drop labels"
+    },
+    {
+      "id": "water-droplet-journey",
+      "type": "virtual-lab",
+      "url": "/virtual-labs/water-droplet",
+      "caption": "Experience the water cycle as a water droplet",
+      "accessibilityDescription": "Interactive simulation where students control a water droplet through the water cycle"
+    }
+  ],
+  "exitTicket": {
+    "id": "water-lesson-5-exit",
+    "questionText": "Put the water cycle steps in the correct order:",
+    "questionType": "drag-and-drop",
+    "correctAnswer": ["Collection (water in ocean)", "Evaporation (sun heats water)", "Condensation (clouds form)", "Precipitation (rain falls)"],
+    "explanation": "The water cycle is a continuous process: Water collects in oceans and lakes → Sun heats it and it evaporates → Water vapor rises and condenses into clouds → Clouds release precipitation → Water collects again and the cycle continues!",
+    "solStandard": "3.9"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "water-cycle-pre-assessment",
+  "unitId": "water-cycle-unit",
+  "assessmentType": "pre-assessment",
+  "questions": [
+    {
+      "id": "pre-q1",
+      "questionText": "What are clouds made of?",
+      "questionType": "multiple-choice",
+      "correctAnswer": "Tiny water droplets",
+      "distractors": ["Cotton balls", "Air and wind", "Smoke"],
+      "explanation": "Clouds are made of millions of tiny water droplets that float in the sky.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "pre-q2",
+      "questionText": "Where does rain come from?",
+      "questionType": "multiple-choice",
+      "correctAnswer": "Clouds in the sky",
+      "distractors": ["The ocean", "The ground", "Trees"],
+      "explanation": "Rain falls from clouds when water droplets get too heavy.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "pre-q3",
+      "questionText": "Can water change from liquid to gas?",
+      "questionType": "true-false",
+      "correctAnswer": "True",
+      "explanation": "Yes! Water can change from liquid to gas (water vapor) through evaporation.",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "pre-q4",
+      "questionText": "Draw what you think the water cycle looks like:",
+      "questionType": "draw-and-explain",
+      "correctAnswer": "Any drawing showing water movement (baseline assessment)",
+      "explanation": "This helps us see what you already know about the water cycle!",
+      "solStandard": "3.9"
+    },
+    {
+      "id": "pre-q5",
+      "questionText": "What makes water evaporate?",
+      "questionType": "multiple-choice",
+      "correctAnswer": "Heat from the sun",
+      "distractors": ["Cold weather", "Wind", "Rain"],
+      "explanation": "The sun's heat causes water to evaporate and turn into water vapor.",
+      "solStandard": "3.9"
+    }
+  ]
+}

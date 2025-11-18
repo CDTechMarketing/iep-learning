@@ -1,0 +1,82 @@
+{
+  "id": "water-cycle-lesson-1",
+  "unitId": "water-cycle-unit",
+  "lessonNumber": 1,
+  "title": "Introduction to Water",
+  "learningObjective": "Students will identify the three states of water: solid, liquid, and gas",
+  "materials": [
+    "Ice cubes (if doing hands-on)",
+    "Cup of water",
+    "Kettle or hot water (for steam demonstration)"
+  ],
+  "procedure": [
+    {
+      "stepNumber": 1,
+      "instruction": "Watch the video 'Water All Around Us' to learn about the three states of water.",
+      "duration": 3,
+      "studentAction": "watch",
+      "scaffoldingSupports": [
+        "Pause the video to discuss key points",
+        "Ask: 'Where do you see water at home?'"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "instruction": "Look at pictures of ice, water, and steam. Sort them into three groups: solid, liquid, and gas.",
+      "duration": 5,
+      "studentAction": "sort",
+      "scaffoldingSupports": [
+        "Remind: Ice is solid (frozen hard)",
+        "Remind: Water you drink is liquid (pours)",
+        "Remind: Steam is water vapor - a gas you can't usually see"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "instruction": "Complete the interactive activity: Sort images of water into solid, liquid, or gas.",
+      "duration": 4,
+      "studentAction": "sort",
+      "scaffoldingSupports": [
+        "Provide immediate feedback on each choice",
+        "Show real photos: ice cubes, water in glass, steam from kettle"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "instruction": "Review vocabulary: solid, liquid, gas, water vapor.",
+      "duration": 3,
+      "studentAction": "read",
+      "scaffoldingSupports": [
+        "Show pictures with each word",
+        "Practice saying each word aloud"
+      ]
+    }
+  ],
+  "multimediaResources": [
+    {
+      "id": "water-intro-video",
+      "type": "video",
+      "url": "https://example.com/water-all-around-us",
+      "duration": 3,
+      "caption": "Learn about the three states of water: solid, liquid, and gas",
+      "accessibilityDescription": "Video showing ice cubes melting into water, then water boiling into steam"
+    },
+    {
+      "id": "water-states-interactive",
+      "type": "interactive-diagram",
+      "url": "/interactives/water-states-sort",
+      "caption": "Sort pictures into solid, liquid, or gas",
+      "accessibilityDescription": "Drag and drop activity with images of ice, water, and steam"
+    }
+  ],
+  "exitTicket": {
+    "id": "water-lesson-1-exit",
+    "questionText": "Circle all the places where you see water:",
+    "questionType": "multiple-choice",
+    "correctAnswer": "Ice cubes, Rain, Ocean, Steam from shower",
+    "distractors": ["Rock", "Dirt", "Tree bark"],
+    "imageUrl": "/images/water-locations.jpg",
+    "explanation": "Water can be found as ice, rain, in the ocean, and as steam! It's all around us in different forms.",
+    "solStandard": "3.9"
+  }
+}

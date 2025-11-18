@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
+import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen, Beaker } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
 import { useStore } from '../store';
@@ -94,6 +94,16 @@ export function Home() {
                 </button>
               </div>
             )}
+          </div>
+
+          <div className="mb-12">
+            <button
+              onClick={() => setCurrentView('science')}
+              className="w-full flex items-center justify-center gap-4 p-12 bg-gradient-to-r from-green-400 to-blue-400 rounded-3xl shadow-2xl hover:shadow-3xl transition-all transform hover:scale-105"
+            >
+              <Beaker className="w-16 h-16 text-white" />
+              <span className="text-4xl font-bold text-white">Science Explorer</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

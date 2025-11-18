@@ -1,0 +1,162 @@
+[
+  {
+    "term": "evaporation",
+    "studentDefinition": "When liquid water turns into water vapor (a gas) and goes up into the air",
+    "technicalDefinition": "The process by which water changes from liquid to gas or vapor",
+    "imageUrl": "/images/vocabulary/evaporation.jpg",
+    "exampleSentence": "The puddle disappeared because of evaporation from the sun's heat.",
+    "relatedTerms": ["water vapor", "heat", "sun energy"]
+  },
+  {
+    "term": "condensation",
+    "studentDefinition": "When water vapor (gas) cools down and turns into tiny water droplets",
+    "technicalDefinition": "The process by which water vapor changes to liquid water",
+    "imageUrl": "/images/vocabulary/condensation.jpg",
+    "exampleSentence": "Condensation happens when water vapor in the air forms clouds.",
+    "relatedTerms": ["water droplets", "clouds", "cooling"]
+  },
+  {
+    "term": "precipitation",
+    "studentDefinition": "Water that falls from clouds to the ground (like rain or snow)",
+    "technicalDefinition": "Any form of water that falls from clouds to Earth's surface",
+    "imageUrl": "/images/vocabulary/precipitation.jpg",
+    "exampleSentence": "Rain is a type of precipitation that helps plants grow.",
+    "relatedTerms": ["rain", "snow", "sleet", "hail"]
+  },
+  {
+    "term": "collection",
+    "studentDefinition": "When water gathers together in oceans, lakes, rivers, or underground",
+    "technicalDefinition": "The accumulation of water in bodies of water on Earth's surface or underground",
+    "imageUrl": "/images/vocabulary/collection.jpg",
+    "exampleSentence": "After rain falls, water collection happens in rivers and lakes.",
+    "relatedTerms": ["ocean", "lake", "river", "groundwater"]
+  },
+  {
+    "term": "water vapor",
+    "studentDefinition": "Water in gas form that you can't see (it's in the air around us)",
+    "technicalDefinition": "Water in its gaseous state",
+    "imageUrl": "/images/vocabulary/water-vapor.jpg",
+    "exampleSentence": "Water vapor is invisible, but it's all around us in the air.",
+    "relatedTerms": ["gas", "evaporation", "condensation"]
+  },
+  {
+    "term": "solid",
+    "studentDefinition": "Matter that has a definite shape and stays in place (like ice)",
+    "technicalDefinition": "A state of matter with a definite shape and volume",
+    "imageUrl": "/images/vocabulary/solid-ice.jpg",
+    "exampleSentence": "Ice is water in its solid form.",
+    "relatedTerms": ["ice", "frozen"]
+  },
+  {
+    "term": "liquid",
+    "studentDefinition": "Matter that can pour and take the shape of its container (like water)",
+    "technicalDefinition": "A state of matter with a definite volume but no definite shape",
+    "imageUrl": "/images/vocabulary/liquid-water.jpg",
+    "exampleSentence": "Water is a liquid that we drink and use every day.",
+    "relatedTerms": ["water", "pour", "flow"]
+  },
+  {
+    "term": "gas",
+    "studentDefinition": "Matter that spreads out to fill any space (like steam or air)",
+    "technicalDefinition": "A state of matter with no definite shape or volume",
+    "imageUrl": "/images/vocabulary/gas-steam.jpg",
+    "exampleSentence": "Steam from boiling water is water in gas form.",
+    "relatedTerms": ["water vapor", "steam", "air"]
+  },
+  {
+    "term": "cloud",
+    "studentDefinition": "A collection of tiny water droplets floating in the sky",
+    "technicalDefinition": "A visible mass of water droplets or ice crystals suspended in the atmosphere",
+    "imageUrl": "/images/vocabulary/clouds.jpg",
+    "exampleSentence": "White fluffy clouds are made of millions of tiny water droplets.",
+    "relatedTerms": ["water droplets", "sky", "condensation"]
+  },
+  {
+    "term": "rain",
+    "studentDefinition": "Water drops that fall from clouds when they get too heavy",
+    "technicalDefinition": "Liquid precipitation that falls from clouds",
+    "imageUrl": "/images/vocabulary/rain.jpg",
+    "exampleSentence": "Rain helps plants grow and fills up lakes and rivers.",
+    "relatedTerms": ["precipitation", "water droplets", "clouds"]
+  },
+  {
+    "term": "snow",
+    "studentDefinition": "Frozen water crystals that fall from clouds when it's very cold",
+    "technicalDefinition": "Frozen precipitation in the form of ice crystals",
+    "imageUrl": "/images/vocabulary/snow.jpg",
+    "exampleSentence": "Snow forms when water droplets freeze in very cold clouds.",
+    "relatedTerms": ["precipitation", "frozen", "ice crystals"]
+  },
+  {
+    "term": "hail",
+    "studentDefinition": "Balls of ice that fall from storm clouds",
+    "technicalDefinition": "Precipitation in the form of balls or lumps of ice",
+    "imageUrl": "/images/vocabulary/hail.jpg",
+    "exampleSentence": "Hail can be as small as a pea or as big as a golf ball!",
+    "relatedTerms": ["precipitation", "ice", "storm"]
+  },
+  {
+    "term": "sleet",
+    "studentDefinition": "Frozen raindrops that are like tiny ice pellets",
+    "technicalDefinition": "Precipitation consisting of ice pellets formed by freezing rain",
+    "imageUrl": "/images/vocabulary/sleet.jpg",
+    "exampleSentence": "Sleet makes a tapping sound when it hits windows.",
+    "relatedTerms": ["precipitation", "frozen", "ice"]
+  },
+  {
+    "term": "sun",
+    "studentDefinition": "The big, bright star that gives Earth light and heat",
+    "technicalDefinition": "The star at the center of our solar system that provides energy to Earth",
+    "imageUrl": "/images/vocabulary/sun.jpg",
+    "exampleSentence": "The sun's heat causes water to evaporate.",
+    "relatedTerms": ["heat", "energy", "light"]
+  },
+  {
+    "term": "heat",
+    "studentDefinition": "Energy that makes things warm or hot",
+    "technicalDefinition": "Thermal energy transferred from one object to another",
+    "imageUrl": "/images/vocabulary/heat.jpg",
+    "exampleSentence": "Heat from the sun causes water to evaporate into the air.",
+    "relatedTerms": ["sun", "energy", "warm"]
+  },
+  {
+    "term": "energy",
+    "studentDefinition": "The power to make things happen or change",
+    "technicalDefinition": "The capacity to do work or cause change",
+    "imageUrl": "/images/vocabulary/energy.jpg",
+    "exampleSentence": "The sun's energy powers the water cycle.",
+    "relatedTerms": ["sun", "heat", "power"]
+  },
+  {
+    "term": "groundwater",
+    "studentDefinition": "Water that soaks into the ground and is stored underground",
+    "technicalDefinition": "Water located beneath Earth's surface in soil pore spaces and rock fractures",
+    "imageUrl": "/images/vocabulary/groundwater.jpg",
+    "exampleSentence": "Some rain soaks into the ground and becomes groundwater.",
+    "relatedTerms": ["underground", "soil", "collection"]
+  },
+  {
+    "term": "ocean",
+    "studentDefinition": "A huge body of salt water that covers most of Earth",
+    "technicalDefinition": "A large body of salt water that covers approximately 71% of Earth's surface",
+    "imageUrl": "/images/vocabulary/ocean.jpg",
+    "exampleSentence": "Oceans hold most of Earth's water and are part of the water cycle.",
+    "relatedTerms": ["salt water", "sea", "collection"]
+  },
+  {
+    "term": "lake",
+    "studentDefinition": "A large body of water surrounded by land",
+    "technicalDefinition": "An inland body of standing water",
+    "imageUrl": "/images/vocabulary/lake.jpg",
+    "exampleSentence": "Lakes collect rainwater and water from rivers.",
+    "relatedTerms": ["fresh water", "collection", "water"]
+  },
+  {
+    "term": "river",
+    "studentDefinition": "A large stream of water that flows toward an ocean or lake",
+    "technicalDefinition": "A natural flowing watercourse",
+    "imageUrl": "/images/vocabulary/river.jpg",
+    "exampleSentence": "Rivers carry water from mountains to oceans.",
+    "relatedTerms": ["flowing water", "stream", "collection"]
+  }
+]

@@ -1,0 +1,83 @@
+{
+  "id": "adaptations-lesson-1",
+  "unitId": "adaptations-unit",
+  "lessonNumber": 1,
+  "title": "What Are Adaptations?",
+  "learningObjective": "Students will define adaptation and identify how adaptations help animals survive",
+  "materials": [
+    "Pictures of animals",
+    "Drawing materials"
+  ],
+  "procedure": [
+    {
+      "stepNumber": 1,
+      "instruction": "Watch the video 'Animals Are Built to Survive' to learn what adaptations are.",
+      "duration": 4,
+      "studentAction": "watch",
+      "scaffoldingSupports": [
+        "Pause to discuss: Each animal has special features",
+        "Point out: These features help them survive",
+        "Ask: 'How does a polar bear stay warm?'"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "instruction": "View the photo gallery of 10 animals with unique adaptations.",
+      "duration": 5,
+      "studentAction": "observe",
+      "scaffoldingSupports": [
+        "Point out: Giraffe's long neck helps reach high leaves",
+        "Point out: Elephant's trunk helps grab food and water",
+        "Point out: Bird's wings help it fly away from danger"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "instruction": "Discussion: How do polar bears stay warm in the freezing cold?",
+      "duration": 4,
+      "studentAction": "predict",
+      "scaffoldingSupports": [
+        "Show picture of polar bear",
+        "Guide: 'Look at its fur - it's very thick!'",
+        "Explain: 'Thick fur is an adaptation that keeps polar bears warm'"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "instruction": "Learn vocabulary: adaptation, survive, environment, habitat.",
+      "duration": 3,
+      "studentAction": "read",
+      "scaffoldingSupports": [
+        "Define adaptation: A special feature that helps an animal survive",
+        "Define survive: Stay alive",
+        "Define habitat: Where an animal lives"
+      ]
+    }
+  ],
+  "multimediaResources": [
+    {
+      "id": "adaptations-intro-video",
+      "type": "video",
+      "url": "https://example.com/animals-survive",
+      "duration": 4,
+      "caption": "Learn how animals have special features called adaptations",
+      "accessibilityDescription": "Video showing various animals and their unique features that help them survive"
+    },
+    {
+      "id": "animal-adaptations-gallery",
+      "type": "photo-gallery",
+      "url": "/gallery/animal-adaptations",
+      "caption": "View 10 animals with amazing adaptations",
+      "accessibilityDescription": "Photo gallery featuring animals like giraffes, elephants, polar bears, and birds with labeled adaptations"
+    }
+  ],
+  "exitTicket": {
+    "id": "adaptations-lesson-1-exit",
+    "questionText": "An adaptation helps animals ___",
+    "questionType": "multiple-choice",
+    "correctAnswer": "Survive in their environment",
+    "distractors": ["Look pretty", "Make friends", "Grow bigger"],
+    "explanation": "Correct! Adaptations are special features that help animals survive in their environment.",
+    "solStandard": "3.5"
+  }
+}

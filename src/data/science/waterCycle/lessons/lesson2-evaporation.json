@@ -1,0 +1,79 @@
+{
+  "id": "water-cycle-lesson-2",
+  "unitId": "water-cycle-unit",
+  "lessonNumber": 2,
+  "title": "Evaporation",
+  "learningObjective": "Students will explain how water evaporates when heated by the sun",
+  "materials": [
+    "Drawing paper",
+    "Crayons or markers",
+    "Picture of the sun"
+  ],
+  "procedure": [
+    {
+      "stepNumber": 1,
+      "instruction": "Watch the animation 'Water Disappears into the Air' showing evaporation.",
+      "duration": 3,
+      "studentAction": "watch",
+      "scaffoldingSupports": [
+        "Point out: The sun heats the water",
+        "Point out: Water turns into tiny droplets we can't see (water vapor)"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "instruction": "Use the slider to add heat to a puddle and watch what happens.",
+      "duration": 4,
+      "studentAction": "observe",
+      "scaffoldingSupports": [
+        "Ask: 'What happens when we add more heat?'",
+        "Confirm: 'The water disappears into the air as water vapor'"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "instruction": "Draw a picture showing the sun heating up a puddle. Label the sun and the puddle.",
+      "duration": 5,
+      "studentAction": "draw",
+      "scaffoldingSupports": [
+        "Provide sentence frame: 'The sun heats the ___'",
+        "Remind: Show steam/vapor rising from the puddle"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "instruction": "Learn vocabulary: evaporation, heat, sun energy, water vapor.",
+      "duration": 3,
+      "studentAction": "read",
+      "scaffoldingSupports": [
+        "Define evaporation: When liquid water turns into gas",
+        "Connect to real life: Puddles after rain disappear"
+      ]
+    }
+  ],
+  "multimediaResources": [
+    {
+      "id": "evaporation-animation",
+      "type": "animation",
+      "url": "https://example.com/evaporation-animation",
+      "duration": 3,
+      "caption": "Watch water evaporate as the sun heats it",
+      "accessibilityDescription": "Animation showing sunlight heating a puddle, with water molecules rising as vapor"
+    },
+    {
+      "id": "evaporation-interactive",
+      "type": "interactive-diagram",
+      "url": "/interactives/evaporation-slider",
+      "caption": "Add heat to see water evaporate",
+      "accessibilityDescription": "Interactive slider that adds heat/sunlight to a puddle, showing evaporation"
+    }
+  ],
+  "exitTicket": {
+    "id": "water-lesson-2-exit",
+    "questionText": "Where does puddle water go? Draw and label your answer.",
+    "questionType": "draw-and-explain",
+    "correctAnswer": "The water evaporates into the air as water vapor",
+    "explanation": "When the sun heats the puddle, the water turns into water vapor (a gas) and goes into the air. This is called evaporation!",
+    "solStandard": "3.9"
+  }
+}

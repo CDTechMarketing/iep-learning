@@ -1,0 +1,78 @@
+{
+  "id": "water-cycle-lesson-4",
+  "unitId": "water-cycle-unit",
+  "lessonNumber": 4,
+  "title": "Precipitation",
+  "learningObjective": "Students will identify different types of precipitation: rain, snow, sleet, and hail",
+  "materials": [
+    "Drawing paper",
+    "Weather pictures"
+  ],
+  "procedure": [
+    {
+      "stepNumber": 1,
+      "instruction": "View the photo gallery showing different types of precipitation: rain, snow, sleet, and hail.",
+      "duration": 4,
+      "studentAction": "observe",
+      "scaffoldingSupports": [
+        "Discuss: 'Have you seen rain before? What about snow?'",
+        "Point out differences in each type"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "instruction": "Match weather conditions to precipitation types. Drag each type to the correct temperature.",
+      "duration": 5,
+      "studentAction": "match",
+      "scaffoldingSupports": [
+        "Hint: Rain = warm weather",
+        "Hint: Snow = freezing cold",
+        "Hint: Sleet and hail = very cold"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "instruction": "Sort pictures: Which ones show precipitation? (fog, dew, rain, steam)",
+      "duration": 4,
+      "studentAction": "sort",
+      "scaffoldingSupports": [
+        "Remind: Precipitation = water falling from clouds",
+        "Fog and dew don't fall from clouds"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "instruction": "Learn vocabulary: precipitation, rain, snow, sleet, hail.",
+      "duration": 3,
+      "studentAction": "read",
+      "scaffoldingSupports": [
+        "Define precipitation: Water that falls from clouds",
+        "Show real photos of each type"
+      ]
+    }
+  ],
+  "multimediaResources": [
+    {
+      "id": "precipitation-gallery",
+      "type": "photo-gallery",
+      "url": "/gallery/precipitation-types",
+      "caption": "View photos of rain, snow, sleet, and hail",
+      "accessibilityDescription": "Photo gallery with labeled images of different precipitation types"
+    },
+    {
+      "id": "precipitation-match",
+      "type": "interactive-diagram",
+      "url": "/interactives/precipitation-match",
+      "caption": "Match precipitation to temperature conditions",
+      "accessibilityDescription": "Drag and drop matching game for precipitation types"
+    }
+  ],
+  "exitTicket": {
+    "id": "water-lesson-4-exit",
+    "questionText": "Draw a picture showing precipitation. Label what type it is (rain, snow, sleet, or hail).",
+    "questionType": "draw-and-explain",
+    "correctAnswer": "Any drawing showing water falling from clouds, correctly labeled",
+    "explanation": "Precipitation is water that falls from clouds. It can be rain (liquid), snow (frozen crystals), sleet (frozen raindrops), or hail (ice balls).",
+    "solStandard": "3.9"
+  }
+}

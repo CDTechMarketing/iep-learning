@@ -1,0 +1,81 @@
+{
+  "id": "water-cycle-lesson-3",
+  "unitId": "water-cycle-unit",
+  "lessonNumber": 3,
+  "title": "Condensation",
+  "learningObjective": "Students will describe how clouds form through condensation",
+  "materials": [
+    "Drawing materials",
+    "Picture of clouds"
+  ],
+  "procedure": [
+    {
+      "stepNumber": 1,
+      "instruction": "Watch the video 'How Clouds Are Made' to learn about condensation.",
+      "duration": 4,
+      "studentAction": "watch",
+      "scaffoldingSupports": [
+        "Pause to discuss: Water vapor goes up into the sky",
+        "Pause to discuss: When vapor cools, it forms tiny water droplets",
+        "Point out: Lots of droplets together make a cloud"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "instruction": "Click to cool down water vapor and watch droplets form.",
+      "duration": 4,
+      "studentAction": "observe",
+      "scaffoldingSupports": [
+        "Explain: Warm vapor goes up",
+        "Explain: High in the sky it gets cold",
+        "Explain: Cold vapor turns back into tiny water droplets"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "instruction": "Label the diagram: Show where water vapor is, where it cools, and where the cloud forms.",
+      "duration": 5,
+      "studentAction": "label",
+      "scaffoldingSupports": [
+        "Provide word bank: water vapor, cooling, cloud, droplets",
+        "Show arrows indicating movement upward"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "instruction": "Learn vocabulary: condensation, water droplets, clouds, cooling.",
+      "duration": 3,
+      "studentAction": "read",
+      "scaffoldingSupports": [
+        "Define condensation: When water vapor (gas) turns into liquid droplets",
+        "Connect to real life: Foggy mirror after shower"
+      ]
+    }
+  ],
+  "multimediaResources": [
+    {
+      "id": "cloud-formation-video",
+      "type": "video",
+      "url": "https://example.com/how-clouds-form",
+      "duration": 4,
+      "caption": "Learn how water vapor condenses to form clouds",
+      "accessibilityDescription": "Video showing water vapor rising into the atmosphere, cooling, and forming clouds"
+    },
+    {
+      "id": "condensation-interactive",
+      "type": "interactive-diagram",
+      "url": "/interactives/condensation-demo",
+      "caption": "Click to cool water vapor and see droplets form",
+      "accessibilityDescription": "Interactive showing temperature control and cloud formation"
+    }
+  ],
+  "exitTicket": {
+    "id": "water-lesson-3-exit",
+    "questionText": "What do you need to make a cloud? Check all that apply.",
+    "questionType": "multiple-choice",
+    "correctAnswer": ["Water vapor", "Cooling", "Tiny water droplets"],
+    "distractors": ["Hot sun", "Ice cubes", "Rain"],
+    "explanation": "Clouds form when water vapor rises up into the sky, cools down, and turns into tiny water droplets. Millions of droplets together make a cloud!",
+    "solStandard": "3.9"
+  }
+}

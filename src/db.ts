@@ -1,5 +1,19 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import {
+  Unit,
+  Phrase,
+  MathProblem,
+  SessionLog,
+  Reward,
+  AppSettings,
+  ScienceUnit,
+  ScienceLesson,
+  VocabularyTerm,
+  ScienceAssessment,
+  ScienceQuestion,
+  ScienceAttempt,
+  VirtualLabActivity
+} from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -9,9 +23,19 @@ export class LearningAppDatabase extends Dexie {
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
 
+  // Science tables (Agent 7)
+  scienceUnits!: Table<ScienceUnit, string>;
+  scienceLessons!: Table<ScienceLesson, string>;
+  scienceVocabulary!: Table<VocabularyTerm, string>;
+  scienceAssessments!: Table<ScienceAssessment, string>;
+  scienceQuestions!: Table<ScienceQuestion, string>;
+  scienceAttempts!: Table<ScienceAttempt, string>;
+  virtualLabActivities!: Table<VirtualLabActivity, string>;
+
   constructor() {
     super('LearningAppDB');
 
+    // Version 1: Original schema
     this.version(1).stores({
       units: 'id, createdAt',
       phrases: 'id, unitId',
@@ -19,6 +43,23 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Version 2: Add science tables (Agent 7)
+    this.version(2).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      scienceUnits: '++id, topic, gradeLevel',
+      scienceLessons: '++id, unitId, lessonNumber',
+      scienceVocabulary: '++id, term',
+      scienceAssessments: '++id, unitId, assessmentType',
+      scienceQuestions: '++id, questionType',
+      scienceAttempts: '++id, studentId, lessonId, timestamp',
+      virtualLabActivities: '++id, topic'
     });
   }
 }

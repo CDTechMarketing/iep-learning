@@ -8,6 +8,7 @@ import { Rewards } from './components/Rewards';
 import { ParentDashboard } from './components/ParentDashboard';
 import { Settings } from './components/Settings';
 import { UnitManagement } from './components/UnitManagement';
+import { SciencePractice } from './components/SciencePractice';
 
 function App() {
   const { currentView, setSettings } = useStore();
@@ -34,6 +35,7 @@ function App() {
       {currentView === 'dashboard' && <ParentDashboard />}
       {currentView === 'settings' && <Settings />}
       {currentView === 'units' && <UnitManagement />}
+      {currentView === 'science' && <SciencePractice />}
     </div>
   );
 }
