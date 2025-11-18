@@ -6,6 +6,9 @@ import { useStore } from '../store';
 import { format } from 'date-fns';
 import { updateMasteryFromSession } from '../utils/masteryTracker';
 import { updateAllGoalsProgress } from '../utils/iepGoalTracker';
+import { PlaceValueBuilder } from './math/PlaceValueBuilder';
+import { NumberComparison } from './math/NumberComparison';
+import { NumberOrdering } from './math/NumberOrdering';
 
 export function MathPractice() {
   const { currentUnit, sessionStars, addStar, recordAttempt, settings } = useStore();
@@ -93,6 +96,16 @@ export function MathPractice() {
     setTimeout(() => {
       handleNextProblem();
     }, 1500);
+  }
+
+  function handleComponentAnswer(correct: boolean) {
+    recordAttempt(correct);
+
+    if (correct) {
+      addStar();
+    }
+
+    handleNextProblem();
   }
 
   function handleNextProblem() {
@@ -231,6 +244,68 @@ export function MathPractice() {
 
   const answerOptions = generateAnswerOptions(currentProblem.answer, currentProblem.type);
 
+  // Render specialized components for new problem types
+  function renderProblemComponent() {
+    switch (currentProblem.type) {
+      case 'place-value':
+        return <PlaceValueBuilder problem={currentProblem} onAnswer={handleComponentAnswer} />;
+      case 'comparison':
+        return <NumberComparison problem={currentProblem} onAnswer={handleComponentAnswer} />;
+      case 'ordering':
+        return <NumberOrdering problem={currentProblem} onAnswer={handleComponentAnswer} />;
+      default:
+        return renderStandardProblem();
+    }
+  }
+
+  function renderStandardProblem() {
+    return (
+      <div className="bg-white rounded-3xl shadow-2xl p-16 max-w-4xl w-full">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-700 mb-4">
+            {currentProblem.type === 'identification'
+              ? 'What number is this?'
+              : 'What is the answer?'}
+          </h2>
+          <p className="text-8xl font-bold text-blue-900 mb-4">{currentProblem.prompt}</p>
+        </div>
+
+        {renderManipulatives()}
+
+        <div className="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
+          {answerOptions.map((option) => (
+            <button
+              key={option}
+              onClick={() => handleAnswerSelect(option)}
+              disabled={showFeedback}
+              className={`p-8 text-5xl font-bold rounded-2xl transition-all transform hover:scale-105 disabled:cursor-not-allowed ${
+                showFeedback && option === currentProblem.answer
+                  ? 'bg-green-500 text-white shadow-2xl'
+                  : showFeedback && option === selectedAnswer
+                  ? 'bg-red-400 text-white'
+                  : 'bg-white border-4 border-gray-300 text-gray-800 hover:border-blue-400 hover:shadow-lg'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+        {showFeedback && (
+          <div className="mt-8 text-center">
+            <p
+              className={`text-3xl font-bold ${
+                isCorrect ? 'text-green-600' : 'text-blue-600'
+              }`}
+            >
+              {isCorrect ? '🎉 Great job!' : '👍 Keep trying!'}
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex flex-col p-8 ${
@@ -250,49 +325,7 @@ export function MathPractice() {
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        <div className="bg-white rounded-3xl shadow-2xl p-16 max-w-4xl w-full">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-700 mb-4">
-              {currentProblem.type === 'identification'
-                ? 'What number is this?'
-                : 'What is the answer?'}
-            </h2>
-            <p className="text-8xl font-bold text-blue-900 mb-4">{currentProblem.prompt}</p>
-          </div>
-
-          {renderManipulatives()}
-
-          <div className="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {answerOptions.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleAnswerSelect(option)}
-                disabled={showFeedback}
-                className={`p-8 text-5xl font-bold rounded-2xl transition-all transform hover:scale-105 disabled:cursor-not-allowed ${
-                  showFeedback && option === currentProblem.answer
-                    ? 'bg-green-500 text-white shadow-2xl'
-                    : showFeedback && option === selectedAnswer
-                    ? 'bg-red-400 text-white'
-                    : 'bg-white border-4 border-gray-300 text-gray-800 hover:border-blue-400 hover:shadow-lg'
-                }`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-
-          {showFeedback && (
-            <div className="mt-8 text-center">
-              <p
-                className={`text-3xl font-bold ${
-                  isCorrect ? 'text-green-600' : 'text-blue-600'
-                }`}
-              >
-                {isCorrect ? '🎉 Great job!' : '👍 Keep trying!'}
-              </p>
-            </div>
-          )}
-        </div>
+        {renderProblemComponent()}
       </div>
     </div>
   );
