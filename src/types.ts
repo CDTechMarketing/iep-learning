@@ -15,10 +15,17 @@ export interface Phrase {
 export interface MathProblem {
   id: string;
   unitId: string;
-  type: 'identification' | 'addition';
+  type: 'identification' | 'addition' | 'multiplication' | 'division';
   prompt: string;
   answer: number;
-  manipulatives?: 'blocks' | 'icons';
+  manipulatives?: 'blocks' | 'icons' | 'array' | 'groups';
+  metadata?: {
+    factor1?: number;
+    factor2?: number;
+    dividend?: number;
+    divisor?: number;
+    quotient?: number;
+  };
 }
 
 export interface SessionLog {

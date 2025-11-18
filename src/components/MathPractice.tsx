@@ -59,7 +59,33 @@ export function MathPractice() {
       }
 
       return Array.from(options).sort((a, b) => a - b);
+    } else if (type === 'multiplication') {
+      const options = new Set<number>([correctAnswer]);
+      const range = correctAnswer > 50 ? 15 : 8;
+
+      while (options.size < 4) {
+        const offset = Math.floor(Math.random() * range) - Math.floor(range / 2);
+        const option = Math.max(0, correctAnswer + offset);
+        if (option !== correctAnswer) {
+          options.add(option);
+        }
+      }
+
+      return Array.from(options).sort((a, b) => a - b);
+    } else if (type === 'division') {
+      const options = new Set<number>([correctAnswer]);
+
+      while (options.size < 4) {
+        const offset = Math.floor(Math.random() * 5) - 2;
+        const option = Math.max(0, correctAnswer + offset);
+        if (option !== correctAnswer && option <= 12) {
+          options.add(option);
+        }
+      }
+
+      return Array.from(options).sort((a, b) => a - b);
     } else {
+      // Addition
       const options = new Set<number>([correctAnswer]);
 
       while (options.size < 4) {
@@ -157,52 +183,155 @@ export function MathPractice() {
   }
 
   function renderManipulatives() {
-    if (!currentProblem.manipulatives || currentProblem.type !== 'addition') {
+    if (!currentProblem.manipulatives) {
       return null;
     }
 
-    const [left, right] = currentProblem.prompt.split('+').map((n) => parseInt(n.trim()));
-    const total = left + right;
+    // Addition manipulatives
+    if (currentProblem.type === 'addition') {
+      const [left, right] = currentProblem.prompt.split('+').map((n) => parseInt(n.trim()));
+      const total = left + right;
 
-    return (
-      <div className="mb-8">
-        <div className="flex justify-center gap-8 mb-4">
-          <div className="flex flex-wrap gap-2 max-w-xs justify-center">
-            {Array.from({ length: left }).map((_, i) => (
-              <button
-                key={`left-${i}`}
-                onClick={() => handleBlockClick(i)}
-                className={`w-16 h-16 rounded-xl transition-all transform ${
-                  blockCounts.includes(i)
-                    ? 'bg-pink-500 scale-125 shadow-2xl ring-4 ring-pink-300'
-                    : 'bg-blue-300 hover:bg-blue-400 shadow-md'
-                }`}
-              />
-            ))}
+      return (
+        <div className="mb-8">
+          <div className="flex justify-center gap-8 mb-4">
+            <div className="flex flex-wrap gap-2 max-w-xs justify-center">
+              {Array.from({ length: left }).map((_, i) => (
+                <button
+                  key={`left-${i}`}
+                  onClick={() => handleBlockClick(i)}
+                  className={`w-16 h-16 rounded-xl transition-all transform ${
+                    blockCounts.includes(i)
+                      ? 'bg-pink-500 scale-125 shadow-2xl ring-4 ring-pink-300'
+                      : 'bg-blue-300 hover:bg-blue-400 shadow-md'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="text-4xl font-bold text-gray-400 flex items-center">+</div>
+
+            <div className="flex flex-wrap gap-2 max-w-xs justify-center">
+              {Array.from({ length: right }).map((_, i) => (
+                <button
+                  key={`right-${i}`}
+                  onClick={() => handleBlockClick(left + i)}
+                  className={`w-16 h-16 rounded-xl transition-all transform ${
+                    blockCounts.includes(left + i)
+                      ? 'bg-pink-500 scale-125 shadow-2xl ring-4 ring-pink-300'
+                      : 'bg-green-300 hover:bg-green-400 shadow-md'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          <div className="text-4xl font-bold text-gray-400 flex items-center">+</div>
-
-          <div className="flex flex-wrap gap-2 max-w-xs justify-center">
-            {Array.from({ length: right }).map((_, i) => (
-              <button
-                key={`right-${i}`}
-                onClick={() => handleBlockClick(left + i)}
-                className={`w-16 h-16 rounded-xl transition-all transform ${
-                  blockCounts.includes(left + i)
-                    ? 'bg-pink-500 scale-125 shadow-2xl ring-4 ring-pink-300'
-                    : 'bg-green-300 hover:bg-green-400 shadow-md'
-                }`}
-              />
-            ))}
-          </div>
+          <p className="text-center text-xl text-gray-600">
+            Tap to count: {blockCounts.length} / {total}
+          </p>
         </div>
+      );
+    }
 
-        <p className="text-center text-xl text-gray-600">
-          Tap to count: {blockCounts.length} / {total}
-        </p>
-      </div>
-    );
+    // Multiplication manipulatives (array model)
+    if (currentProblem.type === 'multiplication' && currentProblem.metadata) {
+      const { factor1, factor2 } = currentProblem.metadata;
+      if (!factor1 || !factor2) return null;
+
+      const rows = Math.min(factor1, factor2);
+      const cols = Math.max(factor1, factor2);
+
+      // Only show array if not too large
+      if (rows * cols > 100) {
+        return (
+          <div className="mb-8 text-center">
+            <p className="text-2xl text-gray-600">
+              Think: {factor1} groups of {factor2}
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <div className="mb-8">
+          <div className="flex flex-col items-center gap-1">
+            {Array.from({ length: rows }).map((_, rowIndex) => (
+              <div key={`row-${rowIndex}`} className="flex gap-1">
+                {Array.from({ length: cols }).map((_, colIndex) => {
+                  const index = rowIndex * cols + colIndex;
+                  return (
+                    <button
+                      key={`cell-${index}`}
+                      onClick={() => handleBlockClick(index)}
+                      className={`w-12 h-12 rounded-lg transition-all transform ${
+                        blockCounts.includes(index)
+                          ? 'bg-purple-500 scale-110 shadow-lg ring-2 ring-purple-300'
+                          : 'bg-blue-300 hover:bg-blue-400 shadow-md'
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xl text-gray-600 mt-4">
+            Tap to count: {blockCounts.length} / {factor1 * factor2}
+          </p>
+          <p className="text-center text-lg text-gray-500 mt-2">
+            {rows} rows × {cols} columns
+          </p>
+        </div>
+      );
+    }
+
+    // Division manipulatives (grouping model)
+    if (currentProblem.type === 'division' && currentProblem.metadata) {
+      const { dividend, divisor } = currentProblem.metadata;
+      if (!dividend || !divisor || dividend === 0) return null;
+
+      const quotient = dividend / divisor;
+
+      return (
+        <div className="mb-8">
+          <p className="text-center text-xl text-gray-600 mb-4">
+            Share {dividend} items into {divisor} groups
+          </p>
+          <div className="flex justify-center gap-4 flex-wrap">
+            {Array.from({ length: divisor }).map((_, groupIndex) => (
+              <div
+                key={`group-${groupIndex}`}
+                className="bg-gray-100 rounded-2xl p-4 border-4 border-gray-300"
+              >
+                <p className="text-center text-sm font-bold text-gray-600 mb-2">
+                  Group {groupIndex + 1}
+                </p>
+                <div className="flex flex-wrap gap-1 max-w-[120px]">
+                  {Array.from({ length: quotient }).map((_, itemIndex) => {
+                    const index = groupIndex * quotient + itemIndex;
+                    return (
+                      <button
+                        key={`item-${index}`}
+                        onClick={() => handleBlockClick(index)}
+                        className={`w-10 h-10 rounded-lg transition-all transform ${
+                          blockCounts.includes(index)
+                            ? 'bg-green-500 scale-110 shadow-lg ring-2 ring-green-300'
+                            : 'bg-orange-300 hover:bg-orange-400 shadow-md'
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xl text-gray-600 mt-4">
+            Tap to count: {blockCounts.length} / {dividend}
+          </p>
+        </div>
+      );
+    }
+
+    return null;
   }
 
   if (showBreakPrompt) {
@@ -249,6 +378,10 @@ export function MathPractice() {
             <h2 className="text-3xl font-bold text-gray-700 mb-4">
               {currentProblem.type === 'identification'
                 ? 'What number is this?'
+                : currentProblem.type === 'multiplication'
+                ? 'What is the product?'
+                : currentProblem.type === 'division'
+                ? 'What is the quotient?'
                 : 'What is the answer?'}
             </h2>
             <p className="text-8xl font-bold text-blue-900 mb-4">{currentProblem.prompt}</p>
