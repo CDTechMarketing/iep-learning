@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, MultisyllabicWord, SyllableProblem } from './types';
 import { seedAgent2PhonicsUnits } from './utils/seedAgent2Phonics';
+import { seedAgent3SyllablesUnits } from './utils/seedAgent3Syllables';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -9,10 +10,13 @@ export class LearningAppDatabase extends Dexie {
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
+  multisyllabicWords!: Table<MultisyllabicWord, string>;
+  syllableProblems!: Table<SyllableProblem, string>;
 
   constructor() {
     super('LearningAppDB');
 
+    // Version 1: Initial schema
     this.version(1).stores({
       units: 'id, createdAt',
       phrases: 'id, unitId',
@@ -20,6 +24,18 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Version 5: Add Agent 3 syllable tables
+    this.version(5).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      multisyllabicWords: 'id, unitId, syllableCount, isCompound',
+      syllableProblems: 'id, unitId, type'
     });
   }
 }
@@ -46,12 +62,18 @@ export async function initializeDatabase() {
   if (unitsCount === 0) {
     await seedInitialData();
     await seedAgent2PhonicsUnits();
+    await seedAgent3SyllablesUnits();
   }
 }
 
 // Helper function to seed only Agent 2 units (for development/testing)
 export async function seedAgent2Only() {
   await seedAgent2PhonicsUnits();
+}
+
+// Helper function to seed only Agent 3 units (for development/testing)
+export async function seedAgent3Only() {
+  await seedAgent3SyllablesUnits();
 }
 
 async function seedInitialData() {
