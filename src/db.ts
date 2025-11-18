@@ -1,5 +1,6 @@
 import Dexie, { Table } from 'dexie';
 import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import { seedAgent2PhonicsUnits } from './utils/seedAgent2Phonics';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -44,7 +45,13 @@ export async function initializeDatabase() {
 
   if (unitsCount === 0) {
     await seedInitialData();
+    await seedAgent2PhonicsUnits();
   }
+}
+
+// Helper function to seed only Agent 2 units (for development/testing)
+export async function seedAgent2Only() {
+  await seedAgent2PhonicsUnits();
 }
 
 async function seedInitialData() {
