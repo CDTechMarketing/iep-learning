@@ -35,6 +35,19 @@ export class LearningAppDatabase extends Dexie {
       skillMastery: 'id, skillId, category, masteryLevel, dateAchievedMastery',
       iepGoals: 'id, category, targetDate, createdAt'
     });
+
+    // Version 3: Add fraction problems table for GED Math Foundation
+    this.version(3).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      fractionProblems: 'id, unitId, type, denominator',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      skillMastery: 'id, skillId, category, masteryLevel, dateAchievedMastery',
+      iepGoals: 'id, category, targetDate, createdAt'
+    });
   }
 }
 
