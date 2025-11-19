@@ -1,5 +1,18 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
+import {
+  Unit,
+  Phrase,
+  MathProblem,
+  SessionLog,
+  Reward,
+  AppSettings,
+  PhonicsPattern,
+  PhonicsActivity,
+  PhonicsAttempt,
+  PhonicsProgress,
+  DecodableText,
+  FluencyAttempt
+} from './types';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
@@ -9,9 +22,18 @@ export class LearningAppDatabase extends Dexie {
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
 
+  // Phonics Pattern Detective tables
+  phonicsPatterns!: Table<PhonicsPattern, string>;
+  phonicsActivities!: Table<PhonicsActivity, string>;
+  phonicsAttempts!: Table<PhonicsAttempt, string>;
+  phonicsProgress!: Table<PhonicsProgress, string>;
+  decodableTexts!: Table<DecodableText, string>;
+  fluencyAttempts!: Table<FluencyAttempt, string>;
+
   constructor() {
     super('LearningAppDB');
 
+    // Original schema
     this.version(1).stores({
       units: 'id, createdAt',
       phrases: 'id, unitId',
@@ -19,6 +41,23 @@ export class LearningAppDatabase extends Dexie {
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
+    });
+
+    // Add phonics tables
+    this.version(2).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      // Phonics Pattern Detective tables
+      phonicsPatterns: '++id, name, category, level',
+      phonicsActivities: '++id, patternId, type',
+      phonicsAttempts: '++id, studentId, activityId, patternId, timestamp',
+      phonicsProgress: '++id, [studentId+patternId], studentId, status',
+      decodableTexts: '++id, level',
+      fluencyAttempts: '++id, studentId, textId, timestamp'
     });
   }
 }

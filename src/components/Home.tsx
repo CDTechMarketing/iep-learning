@@ -96,6 +96,31 @@ export function Home() {
             )}
           </div>
 
+          {/* Phonics Detective - Standalone Section */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Phonics & Reading Skills</h2>
+            <button
+              onClick={() => setCurrentView('phonics')}
+              className="w-full p-12 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 text-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all transform hover:scale-105"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="text-8xl">🔍</div>
+                  <div className="text-left">
+                    <h3 className="text-4xl font-bold mb-2">Phonics Detective</h3>
+                    <p className="text-xl text-purple-100">
+                      Master letter sounds, blending, and reading patterns!
+                    </p>
+                    <p className="text-lg text-purple-200 mt-2">
+                      🎯 Sound Isolation • 🔗 Blending • ✂️ Segmenting • 🧱 Word Building
+                    </p>
+                  </div>
+                </div>
+                <BookOpen className="w-20 h-20 opacity-80" />
+              </div>
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
               onClick={() => setCurrentView('dashboard')}
