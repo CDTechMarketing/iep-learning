@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen } from 'lucide-react';
+import { BookOpen, Calculator, BarChart3, Settings as SettingsIcon, FolderOpen, Eye } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
 import { useStore } from '../store';
@@ -34,6 +34,27 @@ export function Home() {
           <div className="text-center mb-12">
             <h1 className="text-6xl font-bold text-gray-800 mb-4">Learning Time!</h1>
             <p className="text-2xl text-gray-600">Choose an activity to get started</p>
+          </div>
+
+          {/* Sight Words Feature Section */}
+          <div className="mb-12">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl shadow-2xl p-8 text-white">
+              <div className="flex flex-col md:flex-row items-center justify-between">
+                <div className="mb-6 md:mb-0">
+                  <h2 className="text-4xl font-bold mb-2">Sight Words Mastery</h2>
+                  <p className="text-xl opacity-90">
+                    Master high-frequency words with flashcards and fun activities!
+                  </p>
+                </div>
+                <button
+                  onClick={() => setCurrentView('sightwords')}
+                  className="flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg text-xl font-bold"
+                >
+                  <Eye className="w-8 h-8" />
+                  Practice Sight Words
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="mb-12">
