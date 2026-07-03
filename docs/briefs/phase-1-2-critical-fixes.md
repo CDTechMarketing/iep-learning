@@ -261,7 +261,7 @@ of what a break should do in an autism-support app.
 
 ## Task 7 — Crash guards, render side-effects, and the data-loss trap
 
-Three small, unrelated-looking fixes that all stabilize existing behavior:
+Four small, unrelated-looking fixes that all stabilize existing behavior:
 
 **A. Auto-advance crash (`src/components/ReadingPractice.tsx`):** the `useEffect` that
 implements auto-advance reads `currentPhrase.lines` — but `currentPhrase` is
@@ -293,11 +293,27 @@ description to say progress history is kept. Add a separate, clearly-labeled dan
 button "Erase ALL data including progress history" that requires typing `ERASE` in a
 prompt before clearing everything.
 
+**D. First-run init race (verified in-browser 2026-07-03):** React StrictMode runs
+App's init effect twice in dev; both invocations run `initializeDatabase()`
+concurrently, the second fails on duplicate primary keys (console shows
+"DB: Initialization failed: ConstraintError"), and Home — which queries units in its
+own effect — renders "No units available yet" until a manual reload. Fix both halves:
+- Make `initializeDatabase` single-flight and idempotent: keep a module-level
+  `initPromise` in `src/db.ts` (`initializeDatabase()` returns the same promise on
+  re-entry), and wrap the settings-add + seed in a Dexie transaction so a duplicate-key
+  collision can't half-run.
+- Make Home wait for init: export the init promise (or an `ensureInitialized()`), and
+  have `Home.loadUnits` await it before querying — or simpler, have App render its
+  children only after init resolves (a `ready` state) with a friendly large-text
+  "Getting ready…" screen. Prefer the App-level gate; it fixes every view at once.
+
 **Acceptance criteria:**
 - Enable Auto-Advance in Settings, open a reading unit → no crash; lines auto-advance.
 - Complete a full session; exactly one SessionLog exists for it (StrictMode on).
 - "Reload Sample Content" keeps Parent Dashboard history; the ERASE path (typed
   confirmation) clears it.
+- Fresh profile (devtools → Application → Clear site data → reload): Home shows all
+  units on the FIRST load, and the console shows no DB errors in dev.
 - No new lint warnings; ideally the hook-deps warnings for ReadingPractice and Rewards
   are gone.
 

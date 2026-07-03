@@ -5,7 +5,7 @@ working on this project should read this file FIRST, then only the specific brie
 assigned. Do not re-derive project state from other markdown files (see Doc Map below —
 several are stale).
 
-**Last updated:** 2026-07-03 (Fable 5 engineering assessment + brief authoring)
+**Last updated:** 2026-07-03 (Phase 1/2 Tasks 1 & 4 completed and verified in-browser)
 
 ---
 
@@ -34,19 +34,26 @@ router; no backend.
 ## Current state (as of 2026-07-03)
 
 - `npm run typecheck` → 0 errors. `npm run build` → succeeds (755 kB single chunk).
-  `npm run lint` → 15 errors (`no-explicit-any` in logger.ts) + 9 hook warnings.
-- **The app has critical bugs — full engineering assessment done 2026-07-03:**
-  1. **App freezes (infinite loop) when opening either counting unit** — see Phase 1/2 Task 1.
-  2. Parent Dashboard unit import silently converts all math problems to `addition` — Task 2.
-  3. Two incompatible markdown import formats (Unit Management's rejects the documented one) — Task 3.
-  4. "Full Learning Session" flow never advances past the first activity — Phase 3 Task 2.
-  5. Choice Boards selections are saved but never used — Phase 3 Task 2.
-  6. Taking a break loses all session progress — Phase 1/2 Task 6.
-  7. Session accuracy metrics conflate stars with correct answers — Phase 1/2 Task 5.
-- Uncommitted work in the tree (debugging additions to MathPractice, Home, db, etc.).
-  **Commit this before starting briefs.**
+  `npm run lint` → 15 errors (`no-explicit-any` in logger.ts) + 9 hook warnings
+  (all pre-existing; Phase 5 Task 4 clears them).
+- ~~**App freezes (infinite loop) when opening either counting unit**~~ — **FIXED
+  2026-07-03** (Phase 1/2 Task 1, commit `fa2a261`). Both counting units verified
+  playable in-browser; answer options no longer reshuffle during feedback.
+- **Remaining known bugs (unchanged):**
+  1. Parent Dashboard unit import silently converts all math problems to `addition` — Phase 1/2 Task 2.
+  2. Two incompatible markdown import formats (Unit Management's rejects the documented one) — Task 3.
+  3. "Full Learning Session" flow never advances past the first activity — Phase 3 Task 2.
+  4. Choice Boards selections are saved but never used — Phase 3 Task 2.
+  5. Taking a break loses all session progress — Phase 1/2 Task 6.
+  6. Session accuracy metrics conflate stars with correct answers — Phase 1/2 Task 5.
+  7. First-run init race under StrictMode: brand-new profile shows "No units available
+     yet" until reload + console DB ConstraintErrors — Phase 1/2 Task 7D (discovered
+     during in-browser verification 2026-07-03).
+- Working tree is clean; the previously-uncommitted debugging work is committed as
+  baseline `9260e39`.
 - 15 unmerged remote branches exist from an earlier parallel-agent experiment.
   **Decision: do NOT merge them.** Treat as a parts bin (see Decisions log).
+- Dev-server preview config exists at `.claude/launch.json` (`npm run dev`, port 5173).
 
 ## Work plan
 
@@ -55,7 +62,7 @@ paste-able into any coding model.
 
 | Phase | File | Status |
 |---|---|---|
-| 1/2 — Critical fixes & stabilization | `phase-1-2-critical-fixes.md` (8 tasks) | NOT STARTED |
+| 1/2 — Critical fixes & stabilization | `phase-1-2-critical-fixes.md` (8 tasks) | IN PROGRESS — Task 1 done (2026-07-03, Fable, `fa2a261`); Task 4 done (2026-07-03, Fable, `5c05893`); Tasks 2–3 & 5–8 remain |
 | 3 — Refactoring & session flow | `phase-3-refactoring.md` (3 tasks) | NOT STARTED |
 | 4 — Feature completion (Tier 1) | `phase-4-features.md` (5 tasks) | NOT STARTED |
 | 5 — Hardening & reports | `phase-5-hardening.md` (5 tasks) | NOT STARTED |
@@ -64,10 +71,9 @@ paste-able into any coding model.
 
 ## Next / Now
 
-1. Commit current working tree.
-2. Phase 1/2 Task 1 (the freeze fix) — this alone makes the counting units playable again.
-3. Tasks 2–3 (import pipeline) — unblocks the LLM content pipeline.
-4. Remaining Phase 1/2 tasks in order.
+1. Phase 1/2 Task 2 (import must preserve problem types), then Task 3 (one import
+   pipeline) — together they unblock the LLM content pipeline.
+2. Then Tasks 5, 6, 7, 8 in order.
 
 ## Parking lot (decided to defer, revisit later)
 
@@ -94,6 +100,11 @@ paste-able into any coding model.
 
 ## Decisions log
 
+- **2026-07-03** — Phase 1/2 Tasks 1 & 4 implemented by Fable and verified in a live
+  browser session (counting units playable end-to-end; options stable during feedback;
+  no console.log outside logger; Supabase removed). Baseline WIP committed first
+  (`9260e39`). New finding during verification: StrictMode double-init race on first
+  run → added as Task 7D to the Phase 1/2 brief.
 - **2026-07-03** — Full engineering assessment by Claude Fable 5 (see chat; key findings
   reproduced in briefs). Verdict: fix before feature work.
 - **2026-07-03** — Abandon the 15-branch consolidation program (was 15% done, stalled
