@@ -5,7 +5,7 @@ import { Unit } from '../types';
 import { useStore } from '../store';
 
 export function Home() {
-  const { setCurrentUnit, setCurrentView, setSessionPlan, settings, resetSession } = useStore();
+  const { setCurrentUnit, setCurrentView, setSessionPlan, settings, resetSession, startSession } = useStore();
   const [units, setUnits] = useState<Unit[]>([]);
   const [unitContent, setUnitContent] = useState<Record<string, { hasPhrases: boolean; hasMath: boolean }>>({});
 
@@ -83,6 +83,7 @@ export function Home() {
   async function handleStartReading(unit: Unit) {
     setCurrentUnit(unit);
     resetSession();
+    startSession();
 
     // Skip schedule/preview for individual activities - go directly to reading
     setCurrentView('reading');
@@ -91,6 +92,7 @@ export function Home() {
   async function handleStartMath(unit: Unit) {
     setCurrentUnit(unit);
     resetSession();
+    startSession();
 
     // Skip schedule/preview for individual activities - go directly to math
     setCurrentView('math');
@@ -99,6 +101,7 @@ export function Home() {
   async function handleStartFull(unit: Unit) {
     setCurrentUnit(unit);
     resetSession();
+    startSession();
 
     const plan = await createSessionPlan(unit, 'full');
     setSessionPlan(plan);

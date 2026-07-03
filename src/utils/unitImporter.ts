@@ -175,7 +175,17 @@ export function parseUnitMarkdown(markdown: string): ParsedUnit {
     tags.push('cvc', 'reading');
   }
   if (mathProblems.length > 0) {
-    tags.push('math', 'addition');
+    tags.push('math');
+    const hasAddition = mathProblems.some(p => p.type === 'addition');
+    const hasNumberSense = mathProblems.some(p =>
+      ['identification', 'number-line', 'ten-frame', 'touch-count'].includes(p.type)
+    );
+    if (hasAddition) {
+      tags.push('addition');
+    }
+    if (hasNumberSense) {
+      tags.push('number-sense');
+    }
   }
 
   return {

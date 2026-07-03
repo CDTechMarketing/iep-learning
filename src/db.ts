@@ -67,37 +67,50 @@ export class LearningAppDatabase extends Dexie {
 
 export const db = new LearningAppDatabase();
 
-export async function initializeDatabase() {
-  try {
-    const settingsCount = await db.settings.count();
+let initPromise: Promise<void> | null = null;
 
-    if (settingsCount === 0) {
-      await db.settings.add({
-        id: 'default',
-        autoAdvance: false,
-        autoAdvanceDelay: 5,
-        breakPromptInterval: 6,
-        audioEnabled: false,
-        dyslexiaFont: false,
-        childAge: 8,
-        visualScheduleEnabled: true,
-        visualTimerEnabled: true,
-        immediateRewards: true,
-        promptingLevel: 'adaptive',
-        colorScheme: 'default',
-        animationLevel: 'reduced'
-      });
-    }
-
-    const unitsCount = await db.units.count();
-
-    if (unitsCount === 0) {
-      await seedInitialData();
-    }
-  } catch (error) {
-    console.error('DB: Initialization failed:', error);
-    throw error;
+export function initializeDatabase(): Promise<void> {
+  if (initPromise) {
+    return initPromise;
   }
+
+  initPromise = (async () => {
+    try {
+      await db.transaction('rw', [db.settings, db.units, db.phrases, db.mathProblems, db.rewards], async () => {
+        const settingsCount = await db.settings.count();
+
+        if (settingsCount === 0) {
+          await db.settings.add({
+            id: 'default',
+            autoAdvance: false,
+            autoAdvanceDelay: 5,
+            breakPromptInterval: 6,
+            audioEnabled: false,
+            dyslexiaFont: false,
+            childAge: 8,
+            visualScheduleEnabled: true,
+            visualTimerEnabled: true,
+            immediateRewards: true,
+            promptingLevel: 'adaptive',
+            colorScheme: 'default',
+            animationLevel: 'reduced'
+          });
+        }
+
+        const unitsCount = await db.units.count();
+
+        if (unitsCount === 0) {
+          await seedInitialData();
+        }
+      });
+    } catch (error) {
+      console.error('DB: Initialization failed:', error);
+      initPromise = null;
+      throw error;
+    }
+  })();
+
+  return initPromise;
 }
 
 async function seedInitialData() {

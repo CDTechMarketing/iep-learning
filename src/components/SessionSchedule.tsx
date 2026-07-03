@@ -1,11 +1,16 @@
+import { useEffect } from 'react';
 import { useStore } from '../store';
 
 export function SessionSchedule() {
   const { sessionPlan, setCurrentView } = useStore();
 
+  useEffect(() => {
+    if (!sessionPlan) {
+      setCurrentView('home');
+    }
+  }, [sessionPlan, setCurrentView]);
+
   if (!sessionPlan) {
-    // If no session plan, go back to home
-    setCurrentView('home');
     return null;
   }
 

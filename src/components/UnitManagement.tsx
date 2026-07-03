@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Upload, BookOpen, Calculator } from 'lucide-react';
 import { db } from '../db';
 import { Unit } from '../types';
+import { importUnitFromMarkdown } from '../utils/importUnit';
 import { useStore } from '../store';
-import { importMarkdownUnit } from '../utils/markdownParser';
 
 export function UnitManagement() {
   const { setCurrentView } = useStore();
@@ -27,10 +27,10 @@ export function UnitManagement() {
       setImportStatus('idle');
       setImportMessage('');
 
-      await importMarkdownUnit(markdownInput);
+      const { title } = await importUnitFromMarkdown(markdownInput);
 
       setImportStatus('success');
-      setImportMessage('Unit imported successfully!');
+      setImportMessage(`Unit '${title}' imported successfully!`);
       setMarkdownInput('');
 
       await loadUnits();
@@ -73,29 +73,23 @@ export function UnitManagement() {
     }
   }, [units]);
 
-  const exampleMarkdown = `# Unit: Short A — Cat, Sat, Mat
-unit-id: short-a-001
-goal-stars: [5, 10]
+  const exampleMarkdown = `---
+unit-id: example-unit-001
+title: "Example Unit"
+goal-stars: [10, 20, 30]
+---
 
-[cvc-words]
+## CVC Words
 - cat
 - sat
-- mat
 
-[phrases]
-- cat sat on the mat
-- the cat is fat
+## Phrases
+- the cat sat
 
-[math-identification]
-range: 0-20
-count: 5
-
-[math-addition]
-problems:
-- 1+1
-- 2+3
-- 5+4
-manipulatives: blocks`;
+## Math Problems
+### Addition
+- 2+2
+- 3+1`;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 p-8">

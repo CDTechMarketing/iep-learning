@@ -50,26 +50,51 @@ export function Settings() {
   }
 
   async function handleResetDatabase() {
-    if (!confirm('Are you sure you want to reset the database? This will reload all sample data but keep your settings.')) {
+    if (!confirm('Are you sure you want to reload sample content? This will reset all units and activities to their defaults, but will keep your progress history and settings.')) {
       return;
     }
 
     setResetStatus('resetting');
 
     try {
-      // Clear all tables except settings
+      // Clear only content tables
+      await db.units.clear();
+      await db.phrases.clear();
+      await db.mathProblems.clear();
+      await db.rewards.clear();
+
+      // Reload the page to reinitialize the database with seed data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to reload sample content:', error);
+      alert('Failed to reload sample content. Please try refreshing the page.');
+      setResetStatus('idle');
+    }
+  }
+
+  async function handleEraseAllData() {
+    const confirmation = prompt('WARNING: This will erase ALL your data, including all progress history, session logs, custom units, and settings. This cannot be undone. To proceed, please type ERASE below:');
+    if (confirmation !== 'ERASE') {
+      return;
+    }
+
+    setResetStatus('resetting');
+
+    try {
+      // Clear absolutely everything
       await db.units.clear();
       await db.phrases.clear();
       await db.mathProblems.clear();
       await db.sessionLogs.clear();
       await db.rewards.clear();
       await db.logs.clear();
+      await db.settings.clear();
 
       // Reload the page to reinitialize the database with seed data
       window.location.reload();
     } catch (error) {
-      console.error('Failed to reset database:', error);
-      alert('Failed to reset database. Please try refreshing the page.');
+      console.error('Failed to erase all data:', error);
+      alert('Failed to erase all data. Please try refreshing the page.');
       setResetStatus('idle');
     }
   }
@@ -400,20 +425,34 @@ export function Settings() {
 
           <div className="border-t border-gray-200 pt-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Database Management</h2>
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                If you're experiencing issues with missing content or activities not loading, you can reset the database to reload all sample data.
-              </p>
-              <button
-                onClick={handleResetDatabase}
-                disabled={resetStatus === 'resetting'}
-                className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg disabled:bg-gray-300"
-              >
-                {resetStatus === 'resetting' ? 'Resetting...' : 'Reset Database & Reload Sample Data'}
-              </button>
-              <p className="text-sm text-gray-500">
-                Note: This will keep your settings but reload all units and activities.
-              </p>
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <p className="text-gray-600 font-medium">Reload Default Content</p>
+                <p className="text-sm text-gray-500">
+                  Reset all learning units, phrases, math problems, and sticker rewards to their defaults. Your settings and progress history (session logs) will be kept.
+                </p>
+                <button
+                  onClick={handleResetDatabase}
+                  disabled={resetStatus === 'resetting'}
+                  className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-lg disabled:bg-gray-300 font-medium"
+                >
+                  {resetStatus === 'resetting' ? 'Resetting...' : 'Reload Sample Content'}
+                </button>
+              </div>
+
+              <div className="border-t border-dashed border-gray-200 pt-6 space-y-3">
+                <p className="text-red-600 font-semibold">Danger Zone</p>
+                <p className="text-sm text-gray-500">
+                  WARNING: Completely wipes the application database, including settings, custom units, sticker collection, and session progress history.
+                </p>
+                <button
+                  onClick={handleEraseAllData}
+                  disabled={resetStatus === 'resetting'}
+                  className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg disabled:bg-gray-300 font-medium"
+                >
+                  {resetStatus === 'resetting' ? 'Erasing...' : 'Erase ALL Data'}
+                </button>
+              </div>
             </div>
           </div>
 

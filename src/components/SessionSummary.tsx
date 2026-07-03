@@ -4,6 +4,7 @@
  * Shows motivating stats and encouragement at the end of each session
  */
 
+import { useEffect } from 'react';
 import { useStore } from '../store';
 import { logger } from '../utils/logger';
 
@@ -53,13 +54,14 @@ export function SessionSummary() {
   const accuracy = sessionAttempts > 0 ? (sessionCorrect / sessionAttempts) * 100 : 0;
   const duration = sessionStartTime ? Math.round((Date.now() - sessionStartTime) / 60000) : 0;
 
-  // Log summary viewed
-  logger.info('session-summary', 'Session summary displayed', {
-    stars: sessionStars,
-    accuracy: Math.round(accuracy),
-    attempts: sessionAttempts,
-    duration
-  });
+  useEffect(() => {
+    logger.info('session-summary', 'Session summary displayed', {
+      stars: sessionStars,
+      accuracy: Math.round(accuracy),
+      attempts: sessionAttempts,
+      duration
+    });
+  }, [sessionStars, accuracy, sessionAttempts, duration]);
 
   // Use current session log if available, otherwise use current stats
   const displayStars = currentSessionLog?.starsEarned ?? sessionStars;

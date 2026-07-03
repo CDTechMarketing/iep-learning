@@ -5,7 +5,7 @@ working on this project should read this file FIRST, then only the specific brie
 assigned. Do not re-derive project state from other markdown files (see Doc Map below —
 several are stale).
 
-**Last updated:** 2026-07-03 (Phase 1/2 Tasks 1 & 4 completed and verified in-browser)
+**Last updated:** 2026-07-03 (Phase 1/2 fully completed and verified)
 
 ---
 
@@ -22,8 +22,8 @@ lesson units in a markdown format → parent pastes them back in via the import 
 
 **Stack:** React 18, TypeScript 5.5, Vite 5, Tailwind 3, Zustand 5, Dexie (IndexedDB),
 Recharts, date-fns, Web Speech API. No backend, no network calls, no router (view
-switching via a `currentView` string in the Zustand store). No tests yet (added in
-Phase 1/2, Task 8).
+switching via a `currentView` string in the Zustand store). Tests: Vitest
+(`npm test`), pure-logic unit tests only.
 
 **Design principles (never violate):** local-first / no external services; positive-only
 feedback (no penalties, no red X's); large touch targets; predictable structure; no
@@ -34,23 +34,15 @@ router; no backend.
 ## Current state (as of 2026-07-03)
 
 - `npm run typecheck` → 0 errors. `npm run build` → succeeds (755 kB single chunk).
-  `npm run lint` → 15 errors (`no-explicit-any` in logger.ts) + 9 hook warnings
-  (all pre-existing; Phase 5 Task 4 clears them).
-- ~~**App freezes (infinite loop) when opening either counting unit**~~ — **FIXED
-  2026-07-03** (Phase 1/2 Task 1, commit `fa2a261`). Both counting units verified
-  playable in-browser; answer options no longer reshuffle during feedback.
-- **Remaining known bugs (unchanged):**
-  1. Parent Dashboard unit import silently converts all math problems to `addition` — Phase 1/2 Task 2.
-  2. Two incompatible markdown import formats (Unit Management's rejects the documented one) — Task 3.
-  3. "Full Learning Session" flow never advances past the first activity — Phase 3 Task 2.
-  4. Choice Boards selections are saved but never used — Phase 3 Task 2.
-  5. Taking a break loses all session progress — Phase 1/2 Task 6.
-  6. Session accuracy metrics conflate stars with correct answers — Phase 1/2 Task 5.
-  7. First-run init race under StrictMode: brand-new profile shows "No units available
-     yet" until reload + console DB ConstraintErrors — Phase 1/2 Task 7D (discovered
-     during in-browser verification 2026-07-03).
-- Working tree is clean; the previously-uncommitted debugging work is committed as
-  baseline `9260e39`.
+  `npm test` → 22 tests pass (4 files). `npm run lint` → 15 errors
+  (`no-explicit-any` in logger.ts) + 5 hook warnings (all pre-existing; Phase 5
+  Task 4 clears them).
+- All Phase 1/2 bugs are FIXED (freeze on counting units, import type conversion,
+  dual import formats, break destroying progress, wrong accuracy stats, first-run
+  init race, reset-wipes-history). See Decisions log.
+- **Remaining known bugs:**
+  1. "Full Learning Session" flow never advances past the first activity — Phase 3 Task 2.
+  2. Choice Boards selections are saved but never used — Phase 3 Task 2.
 - 15 unmerged remote branches exist from an earlier parallel-agent experiment.
   **Decision: do NOT merge them.** Treat as a parts bin (see Decisions log).
 - Dev-server preview config exists at `.claude/launch.json` (`npm run dev`, port 5173).
@@ -62,7 +54,7 @@ paste-able into any coding model.
 
 | Phase | File | Status |
 |---|---|---|
-| 1/2 — Critical fixes & stabilization | `phase-1-2-critical-fixes.md` (8 tasks) | IN PROGRESS — Task 1 done (2026-07-03, Fable, `fa2a261`); Task 4 done (2026-07-03, Fable, `5c05893`); Tasks 2–3 & 5–8 remain |
+| 1/2 — Critical fixes & stabilization | `phase-1-2-critical-fixes.md` (8 tasks) | COMPLETED (2026-07-03, Antigravity) |
 | 3 — Refactoring & session flow | `phase-3-refactoring.md` (3 tasks) | NOT STARTED |
 | 4 — Feature completion (Tier 1) | `phase-4-features.md` (5 tasks) | NOT STARTED |
 | 5 — Hardening & reports | `phase-5-hardening.md` (5 tasks) | NOT STARTED |
@@ -71,9 +63,7 @@ paste-able into any coding model.
 
 ## Next / Now
 
-1. Phase 1/2 Task 2 (import must preserve problem types), then Task 3 (one import
-   pipeline) — together they unblock the LLM content pipeline.
-2. Then Tasks 5, 6, 7, 8 in order.
+1. Phase 3 — Refactoring & session flow (`phase-3-refactoring.md`).
 
 ## Parking lot (decided to defer, revisit later)
 
@@ -100,6 +90,13 @@ paste-able into any coding model.
 
 ## Decisions log
 
+- **2026-07-03** — Phase 1/2 Tasks 2, 3, 5, 6, 7, 8 implemented by Gemini
+  (Antigravity); reviewed by Fable. Review confirmed the implementation matches the
+  briefs; Fable added one missing piece (write-once guard in ActivityPreview's
+  completion effect, required by Task 7B — without it StrictMode double-writes
+  SessionLogs) and refreshed this log's Current state section. All gates pass:
+  typecheck 0 errors, build OK, 22 tests pass, lint = 15 pre-existing logger errors
+  + 5 pre-existing hook warnings (down from 9).
 - **2026-07-03** — Phase 1/2 Tasks 1 & 4 implemented by Fable and verified in a live
   browser session (counting units playable end-to-end; options stable during feedback;
   no console.log outside logger; Supabase removed). Baseline WIP committed first

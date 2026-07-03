@@ -1,48 +1,48 @@
+import { useEffect, useRef } from 'react';
 import { useStore } from '../store';
-import { SessionLog } from '../types';
-import { db } from '../db';
-import { format } from 'date-fns';
+import { finishSession } from '../utils/session';
 
 export function ActivityPreview() {
   const {
     sessionPlan,
     currentUnit,
-    sessionStars,
-    sessionAttempts,
-    sessionCorrect,
     setCurrentView,
-    updateActivityStatus,
-    setCurrentSessionLog
+    updateActivityStatus
   } = useStore();
+
+  const currentActivityIndex = sessionPlan?.currentActivityIndex;
+  // StrictMode double-invokes effects; without this guard the completion
+  // branch would write two SessionLogs for one session.
+  const completionHandled = useRef(false);
+
+  useEffect(() => {
+    if (!sessionPlan) {
+      setCurrentView('home');
+      return;
+    }
+    if (currentActivityIndex !== undefined && currentActivityIndex >= sessionPlan.activities.length) {
+      if (completionHandled.current) return;
+      completionHandled.current = true;
+      if (currentUnit) {
+        finishSession(currentUnit);
+      } else {
+        setCurrentView('rewards');
+      }
+    }
+  }, [sessionPlan, currentActivityIndex, currentUnit, setCurrentView]);
 
   if (!sessionPlan) return null;
 
   const currentActivity = sessionPlan.activities[sessionPlan.currentActivityIndex];
 
   if (!currentActivity) {
-    // All activities completed, create session log and show summary
-    if (currentUnit) {
-      const sessionLog: SessionLog = {
-        id: `session-${Date.now()}`,
-        unitId: currentUnit.id,
-        date: format(new Date(), 'yyyy-MM-dd'),
-        starsEarned: sessionStars,
-        attempts: sessionAttempts,
-        correct: sessionCorrect,
-        milestonesReached: currentUnit.goalStars.filter(goal => sessionStars >= goal),
-        createdAt: new Date()
-      };
-
-      // Save to database and store
-      db.sessionLogs.add(sessionLog).then(() => {
-        setCurrentSessionLog(sessionLog);
-        setCurrentView('session-summary');
-      });
-    } else {
-      // Fallback if no unit (shouldn't happen)
-      setCurrentView('rewards');
-    }
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-8">
+        <div className="text-center">
+          <p className="text-3xl font-bold text-gray-700 animate-pulse">Wrapping up...</p>
+        </div>
+      </div>
+    );
   }
 
   const handleStart = () => {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from './store';
 import { initializeDatabase, db } from './db';
 import { Home } from './components/Home';
@@ -18,6 +18,7 @@ import { logger } from './utils/logger';
 
 function App() {
   const { currentView, setSettings } = useStore();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -40,6 +41,7 @@ function App() {
         const initTime = performance.now() - startTime;
         logger.performance('app-initialization', initTime);
         logger.info('app', `Application ready (${Math.round(initTime)}ms)`);
+        setReady(true);
       } catch (error) {
         logger.critical('app', 'Failed to initialize application', error as Error);
         // Still throw to trigger Error Boundary
@@ -48,7 +50,15 @@ function App() {
     }
 
     init();
-  }, []);
+  }, [setSettings]);
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex flex-col items-center justify-center p-8">
+        <p className="text-3xl font-bold text-gray-700 animate-pulse">Getting ready…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

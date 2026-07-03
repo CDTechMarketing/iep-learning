@@ -6,7 +6,7 @@ import { ColorSwirls } from './ColorSwirls';
 
 type BreakActivity = 'select' | 'breathing' | 'bubbles' | 'colors' | 'counting';
 
-export function SensoryBreak() {
+export function SensoryBreak({ onComplete }: { onComplete?: () => void } = {}) {
   const { setCurrentView } = useStore();
   const [currentActivity, setCurrentActivity] = useState<BreakActivity>('select');
 
@@ -19,7 +19,11 @@ export function SensoryBreak() {
   };
 
   const handleComplete = () => {
-    setCurrentView('home');
+    if (onComplete) {
+      onComplete();
+    } else {
+      setCurrentView('home');
+    }
   };
 
   if (currentActivity === 'breathing') {

@@ -3,43 +3,17 @@ import { Star } from 'lucide-react';
 import { db } from '../db';
 import { MathProblem } from '../types';
 import { useStore } from '../store';
-import { format } from 'date-fns';
+import { finishSession } from '../utils/session';
 import { NumberLineActivity } from './NumberLineActivity';
 import { TenFrameActivity } from './TenFrameActivity';
 import { TouchCountActivity } from './TouchCountActivity';
 import { VisualTimer } from './VisualTimer';
 import { ImmediateReward } from './ImmediateReward';
-
-// Builds four answer choices from a finite candidate pool. A bounded pool (rather
-// than rejection sampling) guarantees termination for any answer value, including
-// the 20-39 range used by the counting units.
-function generateAnswerOptions(correctAnswer: number, type: string): number[] {
-  const range = type === 'identification' ? (correctAnswer > 50 ? 10 : 5) : 3;
-
-  const candidates: number[] = [];
-  for (let n = Math.max(0, correctAnswer - range); n <= correctAnswer + range; n++) {
-    if (n !== correctAnswer) {
-      candidates.push(n);
-    }
-  }
-
-  // Small answers (e.g. 0 or 1) can leave fewer than 3 distractors; extend upward.
-  let next = correctAnswer + range + 1;
-  while (candidates.length < 3) {
-    candidates.push(next);
-    next++;
-  }
-
-  for (let i = candidates.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
-  }
-
-  return [correctAnswer, ...candidates.slice(0, 3)].sort((a, b) => a - b);
-}
+import { SensoryBreak } from './SensoryBreak';
+import { generateAnswerOptions } from '../utils/answerOptions';
 
 export function MathPractice() {
-  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView, setCurrentSessionLog } = useStore();
+  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView } = useStore();
   const [problems, setProblems] = useState<MathProblem[]>([]);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -49,6 +23,7 @@ export function MathPractice() {
   const [itemsCompleted, setItemsCompleted] = useState(0);
   const [blockCounts, setBlockCounts] = useState<number[]>([]);
   const [showImmediateReward, setShowImmediateReward] = useState(false);
+  const [showBreakActivity, setShowBreakActivity] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -207,23 +182,7 @@ export function MathPractice() {
 
   async function handleSessionComplete() {
     if (!currentUnit) return;
-
-    const sessionLog = {
-      id: `session-${Date.now()}`,
-      unitId: currentUnit.id,
-      date: format(new Date(), 'yyyy-MM-dd'),
-      starsEarned: sessionStars,
-      attempts: itemsCompleted,
-      correct: sessionStars,
-      milestonesReached: currentUnit.goalStars.filter((goal) => sessionStars >= goal),
-      createdAt: new Date()
-    };
-
-    await db.sessionLogs.add(sessionLog);
-
-    // Save session log to store and show summary
-    setCurrentSessionLog(sessionLog);
-    setCurrentView('session-summary');
+    await finishSession(currentUnit);
   }
 
   function handleBlockClick(index: number) {
@@ -372,6 +331,18 @@ export function MathPractice() {
     );
   }
 
+  if (showBreakActivity) {
+    return (
+      <SensoryBreak
+        onComplete={() => {
+          setShowBreakActivity(false);
+          setShowBreakPrompt(false);
+          moveToNextProblem();
+        }}
+      />
+    );
+  }
+
   if (showBreakPrompt) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
@@ -382,7 +353,7 @@ export function MathPractice() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <button
-              onClick={() => setCurrentView('break')}
+              onClick={() => setShowBreakActivity(true)}
               className="p-8 bg-gradient-to-br from-purple-400 to-pink-400 text-white rounded-2xl hover:from-purple-500 hover:to-pink-500 transition-all transform hover:scale-105 shadow-xl"
             >
               <div className="text-6xl mb-3">🧘</div>

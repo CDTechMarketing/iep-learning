@@ -12,32 +12,32 @@ export function Rewards() {
   const [newlyUnlocked, setNewlyUnlocked] = useState<Reward[]>([]);
 
   useEffect(() => {
-    loadRewards();
-  }, []);
+    async function loadRewards() {
+      const rewardsData = await db.rewards.toArray();
+      setRewards(rewardsData.sort((a, b) => a.milestone - b.milestone));
 
-  async function loadRewards() {
-    const rewardsData = await db.rewards.toArray();
-    setRewards(rewardsData.sort((a, b) => a.milestone - b.milestone));
+      if (currentUnit) {
+        const logs = await db.sessionLogs
+          .where('unitId')
+          .equals(currentUnit.id)
+          .toArray();
 
-    if (currentUnit) {
-      const logs = await db.sessionLogs
-        .where('unitId')
-        .equals(currentUnit.id)
-        .toArray();
+        const total = logs.reduce((sum, log) => sum + log.starsEarned, 0);
+        setTotalStars(total);
 
-      const total = logs.reduce((sum, log) => sum + log.starsEarned, 0);
-      setTotalStars(total);
+        const unlocked = rewardsData.filter((r) => total >= r.milestone);
+        setUnlockedRewards(new Set(unlocked.map((r) => r.id)));
 
-      const unlocked = rewardsData.filter((r) => total >= r.milestone);
-      setUnlockedRewards(new Set(unlocked.map((r) => r.id)));
-
-      const prevTotal = total - sessionStars;
-      const newUnlocked = rewardsData.filter(
-        (r) => r.milestone > prevTotal && r.milestone <= total
-      );
-      setNewlyUnlocked(newUnlocked);
+        const prevTotal = total - sessionStars;
+        const newUnlocked = rewardsData.filter(
+          (r) => r.milestone > prevTotal && r.milestone <= total
+        );
+        setNewlyUnlocked(newUnlocked);
+      }
     }
-  }
+
+    loadRewards();
+  }, [currentUnit, sessionStars]);
 
   function handleContinue() {
     resetSession();

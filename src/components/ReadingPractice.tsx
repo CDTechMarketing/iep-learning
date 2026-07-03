@@ -1,20 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Star, Volume2, VolumeX, X } from 'lucide-react';
 import { db } from '../db';
 import { Phrase } from '../types';
 import { useStore } from '../store';
-import { format } from 'date-fns';
+import { finishSession } from '../utils/session';
+import { SensoryBreak } from './SensoryBreak';
 
 export function ReadingPractice() {
-  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView, setCurrentSessionLog } = useStore();
+  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView } = useStore();
   const [phrases, setPhrases] = useState<Phrase[]>([]);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showBreakPrompt, setShowBreakPrompt] = useState(false);
+  const [showBreakActivity, setShowBreakActivity] = useState(false);
   const [itemsCompleted, setItemsCompleted] = useState(0);
 
   useEffect(() => {
+    async function loadPhrases() {
+      if (!currentUnit) return;
+
+      const phrasesData = await db.phrases
+        .where('unitId')
+        .equals(currentUnit.id)
+        .toArray();
+
+      setPhrases(phrasesData);
+    }
+
     if (currentUnit) {
       loadPhrases();
     }
@@ -26,48 +39,23 @@ export function ReadingPractice() {
     }
   }, [settings]);
 
-  useEffect(() => {
-    if (settings?.autoAdvance && currentLineIndex < currentPhrase.lines.length - 1) {
-      const timer = setTimeout(() => {
-        handleNextLine();
-      }, settings.autoAdvanceDelay * 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentLineIndex, settings?.autoAdvance, settings?.autoAdvanceDelay]);
-
-  async function loadPhrases() {
-    if (!currentUnit) return;
-
-    const phrasesData = await db.phrases
-      .where('unitId')
-      .equals(currentUnit.id)
-      .toArray();
-
-    setPhrases(phrasesData);
-  }
-
   const currentPhrase = phrases[currentPhraseIndex];
 
-  if (!currentPhrase) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
-        <div className="text-center">
-          <p className="text-2xl text-gray-700 mb-4">Loading phrases...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleSessionComplete = useCallback(async () => {
+    if (!currentUnit) return;
+    await finishSession(currentUnit);
+  }, [currentUnit]);
 
-  function handleNextLine() {
-    if (currentLineIndex < currentPhrase.lines.length - 1) {
-      setCurrentLineIndex(currentLineIndex + 1);
+  const moveToNextPhrase = useCallback(() => {
+    if (currentPhraseIndex < phrases.length - 1) {
+      setCurrentPhraseIndex(currentPhraseIndex + 1);
+      setCurrentLineIndex(0);
     } else {
-      handlePhraseComplete();
+      handleSessionComplete();
     }
-  }
+  }, [currentPhraseIndex, phrases.length, handleSessionComplete]);
 
-  async function handlePhraseComplete() {
+  const handlePhraseComplete = useCallback(async () => {
     addStar();
     recordAttempt(true);
 
@@ -80,15 +68,36 @@ export function ReadingPractice() {
     }
 
     moveToNextPhrase();
-  }
+  }, [addStar, recordAttempt, itemsCompleted, settings?.breakPromptInterval, moveToNextPhrase]);
 
-  function moveToNextPhrase() {
-    if (currentPhraseIndex < phrases.length - 1) {
-      setCurrentPhraseIndex(currentPhraseIndex + 1);
-      setCurrentLineIndex(0);
+  const handleNextLine = useCallback(() => {
+    if (currentPhrase && currentLineIndex < currentPhrase.lines.length - 1) {
+      setCurrentLineIndex(currentLineIndex + 1);
     } else {
-      handleSessionComplete();
+      handlePhraseComplete();
     }
+  }, [currentLineIndex, currentPhrase, handlePhraseComplete]);
+
+  useEffect(() => {
+    if (!settings?.autoAdvance || !currentPhrase) return;
+
+    if (currentLineIndex < currentPhrase.lines.length - 1) {
+      const timer = setTimeout(() => {
+        handleNextLine();
+      }, settings.autoAdvanceDelay * 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentLineIndex, settings?.autoAdvance, settings?.autoAdvanceDelay, currentPhrase, handleNextLine]);
+
+  if (!currentPhrase) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
+        <div className="text-center">
+          <p className="text-2xl text-gray-700 mb-4">Loading phrases...</p>
+        </div>
+      </div>
+    );
   }
 
   function handleBreakContinue() {
@@ -96,26 +105,6 @@ export function ReadingPractice() {
     moveToNextPhrase();
   }
 
-  async function handleSessionComplete() {
-    if (!currentUnit) return;
-
-    const sessionLog = {
-      id: `session-${Date.now()}`,
-      unitId: currentUnit.id,
-      date: format(new Date(), 'yyyy-MM-dd'),
-      starsEarned: sessionStars,
-      attempts: itemsCompleted,
-      correct: itemsCompleted,
-      milestonesReached: currentUnit.goalStars.filter(goal => sessionStars >= goal),
-      createdAt: new Date()
-    };
-
-    await db.sessionLogs.add(sessionLog);
-
-    // Save session log to store and show summary
-    setCurrentSessionLog(sessionLog);
-    setCurrentView('session-summary');
-  }
 
   function speakText(text: string) {
     if (!audioEnabled || !('speechSynthesis' in window)) return;
@@ -215,6 +204,18 @@ export function ReadingPractice() {
     setCurrentView('home');
   }
 
+  if (showBreakActivity) {
+    return (
+      <SensoryBreak
+        onComplete={() => {
+          setShowBreakActivity(false);
+          setShowBreakPrompt(false);
+          moveToNextPhrase();
+        }}
+      />
+    );
+  }
+
   if (showBreakPrompt) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
@@ -225,7 +226,7 @@ export function ReadingPractice() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <button
-              onClick={() => setCurrentView('break')}
+              onClick={() => setShowBreakActivity(true)}
               className="p-8 bg-gradient-to-br from-purple-400 to-pink-400 text-white rounded-2xl hover:from-purple-500 hover:to-pink-500 transition-all transform hover:scale-105 shadow-xl"
             >
               <div className="text-6xl mb-3">🧘</div>
