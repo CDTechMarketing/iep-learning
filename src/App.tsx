@@ -56,12 +56,7 @@ function App() {
       {currentView === 'schedule' && <SessionSchedule />}
       {currentView === 'preview' && <ActivityPreview />}
       {currentView === 'reading' && <ReadingPractice />}
-      {currentView === 'math' && (
-        <>
-          {console.log('App: Rendering MathPractice, currentView:', currentView)}
-          <MathPractice />
-        </>
-      )}
+      {currentView === 'math' && <MathPractice />}
       {currentView === 'break' && <SensoryBreak />}
       {currentView === 'rewards' && <Rewards />}
       {currentView === 'progress' && <StudentProgress />}

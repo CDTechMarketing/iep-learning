@@ -69,12 +69,9 @@ export const db = new LearningAppDatabase();
 
 export async function initializeDatabase() {
   try {
-    console.log('DB: Starting initialization...');
     const settingsCount = await db.settings.count();
-    console.log('DB: Settings count:', settingsCount);
 
     if (settingsCount === 0) {
-      console.log('DB: Adding default settings...');
       await db.settings.add({
         id: 'default',
         autoAdvance: false,
@@ -90,19 +87,13 @@ export async function initializeDatabase() {
         colorScheme: 'default',
         animationLevel: 'reduced'
       });
-      console.log('DB: Default settings added');
     }
 
     const unitsCount = await db.units.count();
-    console.log('DB: Units count:', unitsCount);
 
     if (unitsCount === 0) {
-      console.log('DB: Seeding initial data...');
       await seedInitialData();
-      console.log('DB: Seed data complete');
     }
-    
-    console.log('DB: Initialization complete');
   } catch (error) {
     console.error('DB: Initialization failed:', error);
     throw error;

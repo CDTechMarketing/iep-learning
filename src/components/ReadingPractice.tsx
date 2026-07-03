@@ -212,7 +212,7 @@ export function ReadingPractice() {
   }
 
   function handleQuitSession() {
-    useStore.setState({ currentView: 'home' });
+    setCurrentView('home');
   }
 
   if (showBreakPrompt) {
