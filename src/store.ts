@@ -3,7 +3,7 @@ import { Unit, AppSettings, SessionPlan, SessionActivity, SessionLog } from './t
 
 interface AppState {
   currentUnit: Unit | null;
-  currentView: 'home' | 'reading' | 'math' | 'science' | 'break' | 'rewards' | 'progress' | 'dashboard' | 'settings' | 'units' | 'preview' | 'schedule' | 'choice-boards' | 'session-summary';
+  currentView: 'home' | 'reading' | 'math' | 'break' | 'rewards' | 'progress' | 'dashboard' | 'settings' | 'units' | 'preview' | 'schedule' | 'choice-boards' | 'session-summary';
   sessionStars: number;
   sessionAttempts: number;
   sessionCorrect: number;
@@ -11,8 +11,8 @@ interface AppState {
   settings: AppSettings | null;
   sessionPlan: SessionPlan | null;
   showImmediateReward: boolean;
-  selectedActivities: Array<'reading' | 'math' | 'science' | 'break'>;
-  activityOrder: Array<'reading' | 'math' | 'science' | 'break'>;
+  selectedActivities: Array<'reading' | 'math' | 'break'>;
+  activityOrder: Array<'reading' | 'math' | 'break'>;
   currentSessionLog: SessionLog | null;
   setCurrentUnit: (unit: Unit | null) => void;
   setCurrentView: (view: AppState['currentView']) => void;
@@ -24,7 +24,7 @@ interface AppState {
   updateActivityStatus: (activityId: string, status: SessionActivity['status']) => void;
   nextActivity: () => void;
   setShowImmediateReward: (show: boolean) => void;
-  setActivityChoices: (activities: Array<'reading' | 'math' | 'science' | 'break'>, order: Array<'reading' | 'math' | 'science' | 'break'>) => void;
+  setActivityChoices: (activities: Array<'reading' | 'math' | 'break'>, order: Array<'reading' | 'math' | 'break'>) => void;
   setCurrentSessionLog: (log: SessionLog | null) => void;
   startSession: () => void;
 }

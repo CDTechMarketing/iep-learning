@@ -20,11 +20,11 @@ export function parseMarkdownUnit(markdown: string): ParsedUnit {
   const phrases: Phrase[] = [];
   const mathProblems: MathProblem[] = [];
 
-  let cvcWords: string[] = [];
-  let phraseLines: string[][] = [];
+  const cvcWords: string[] = [];
+  const phraseLines: string[][] = [];
   let mathIdRange = { min: 0, max: 100 };
   let mathIdCount = 10;
-  let additionProblems: string[] = [];
+  const additionProblems: string[] = [];
   let manipulatives: 'blocks' | 'icons' = 'blocks';
 
   for (const line of lines) {

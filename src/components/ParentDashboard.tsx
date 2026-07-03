@@ -17,7 +17,7 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { format, subDays, startOfWeek, startOfMonth } from 'date-fns';
+import { format, startOfWeek, startOfMonth } from 'date-fns';
 
 interface UnitPerformance {
   unitId: string;
@@ -184,7 +184,7 @@ export function ParentDashboard() {
       setChildAge(settings.childAge);
     }
 
-    let query = db.sessionLogs.toArray();
+    const query = db.sessionLogs.toArray();
     let allSessions = await query;
 
     if (selectedUnit !== 'all') {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Star, Home } from 'lucide-react';
 import { db } from '../db';
-import { Reward, SessionLog } from '../types';
+import { Reward } from '../types';
 import { useStore } from '../store';
 
 export function Rewards() {

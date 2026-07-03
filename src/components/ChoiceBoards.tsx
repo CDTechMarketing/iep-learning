@@ -15,7 +15,7 @@ interface ActivityChoice {
 }
 
 export function ChoiceBoards({ onComplete }: ChoiceBoardsProps) {
-  const { settings, setActivityChoices, setCurrentView } = useStore();
+  const { setActivityChoices, setCurrentView } = useStore();
 
   const [activities, setActivities] = useState<ActivityChoice[]>([
     {

@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useStore } from '../store';
 import { db } from '../db';
 import { SessionLog } from '../types';
-import { Star, TrendingUp, Award, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export function StudentProgress() {
-  const { setCurrentView, settings } = useStore();
+  const { setCurrentView } = useStore();
   const [sessionLogs, setSessionLogs] = useState<SessionLog[]>([]);
   const [totalStars, setTotalStars] = useState(0);
   const [totalSessions, setTotalSessions] = useState(0);

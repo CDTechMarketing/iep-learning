@@ -61,7 +61,7 @@ export interface AppSettings {
 
 export interface SessionActivity {
   id: string;
-  type: 'reading' | 'math' | 'science' | 'break' | 'rewards';
+  type: 'reading' | 'math' | 'break' | 'rewards';
   title: string;
   icon: string;
   estimatedItems: number;
@@ -77,15 +77,4 @@ export interface SessionPlan {
   createdAt: Date;
 }
 
-export interface ScienceProblem {
-  id: string;
-  unitId: string;
-  type: 'simple-machine' | 'force' | 'compound-machine' | 'machine-identify';
-  machineType?: 'lever' | 'wheel-axle' | 'pulley' | 'inclined-plane' | 'wedge' | 'screw';
-  prompt: string;
-  question: string;
-  correctAnswer: string;
-  options?: string[];
-  description?: string;
-  examples?: string[];
-}
+

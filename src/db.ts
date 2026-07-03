@@ -1,12 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings, ScienceProblem } from './types';
+import { Unit, Phrase, MathProblem, SessionLog, Reward, AppSettings } from './types';
 import type { LogEntry } from './utils/logger';
 
 export class LearningAppDatabase extends Dexie {
   units!: Table<Unit, string>;
   phrases!: Table<Phrase, string>;
   mathProblems!: Table<MathProblem, string>;
-  scienceProblems!: Table<ScienceProblem, string>;
   sessionLogs!: Table<SessionLog, string>;
   rewards!: Table<Reward, string>;
   settings!: Table<AppSettings, string>;
@@ -25,12 +24,11 @@ export class LearningAppDatabase extends Dexie {
       settings: 'id'
     });
 
-    // Version 2: Add science problems
+    // Version 2: Add science problems (REMOVED in v1.0 - deferred to v1.1)
     this.version(2).stores({
       units: 'id, createdAt',
       phrases: 'id, unitId',
       mathProblems: 'id, unitId, type',
-      scienceProblems: 'id, unitId, type, machineType',
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id'
@@ -41,11 +39,28 @@ export class LearningAppDatabase extends Dexie {
       units: 'id, createdAt',
       phrases: 'id, unitId',
       mathProblems: 'id, unitId, type',
-      scienceProblems: 'id, unitId, type, machineType',
       sessionLogs: 'id, unitId, date, createdAt',
       rewards: 'id, milestone',
       settings: 'id',
       logs: '++id, timestamp, level, category'
+    });
+
+    // Version 4: Remove science problems table (v1.0 cleanup)
+    this.version(4).stores({
+      units: 'id, createdAt',
+      phrases: 'id, unitId',
+      mathProblems: 'id, unitId, type',
+      sessionLogs: 'id, unitId, date, createdAt',
+      rewards: 'id, milestone',
+      settings: 'id',
+      logs: '++id, timestamp, level, category'
+    }).upgrade(async (tx) => {
+      // Drop scienceProblems table if it exists (for users upgrading from dev versions)
+      try {
+        await tx.table('scienceProblems').clear();
+      } catch {
+        // Table doesn't exist, which is fine
+      }
     });
   }
 }
@@ -53,30 +68,44 @@ export class LearningAppDatabase extends Dexie {
 export const db = new LearningAppDatabase();
 
 export async function initializeDatabase() {
-  const settingsCount = await db.settings.count();
+  try {
+    console.log('DB: Starting initialization...');
+    const settingsCount = await db.settings.count();
+    console.log('DB: Settings count:', settingsCount);
 
-  if (settingsCount === 0) {
-    await db.settings.add({
-      id: 'default',
-      autoAdvance: false,
-      autoAdvanceDelay: 5,
-      breakPromptInterval: 6,
-      audioEnabled: false,
-      dyslexiaFont: false,
-      childAge: 8,
-      visualScheduleEnabled: true,
-      visualTimerEnabled: true,
-      immediateRewards: true,
-      promptingLevel: 'adaptive',
-      colorScheme: 'default',
-      animationLevel: 'reduced'
-    });
-  }
+    if (settingsCount === 0) {
+      console.log('DB: Adding default settings...');
+      await db.settings.add({
+        id: 'default',
+        autoAdvance: false,
+        autoAdvanceDelay: 5,
+        breakPromptInterval: 6,
+        audioEnabled: false,
+        dyslexiaFont: false,
+        childAge: 8,
+        visualScheduleEnabled: true,
+        visualTimerEnabled: true,
+        immediateRewards: true,
+        promptingLevel: 'adaptive',
+        colorScheme: 'default',
+        animationLevel: 'reduced'
+      });
+      console.log('DB: Default settings added');
+    }
 
-  const unitsCount = await db.units.count();
+    const unitsCount = await db.units.count();
+    console.log('DB: Units count:', unitsCount);
 
-  if (unitsCount === 0) {
-    await seedInitialData();
+    if (unitsCount === 0) {
+      console.log('DB: Seeding initial data...');
+      await seedInitialData();
+      console.log('DB: Seed data complete');
+    }
+    
+    console.log('DB: Initialization complete');
+  } catch (error) {
+    console.error('DB: Initialization failed:', error);
+    throw error;
   }
 }
 

@@ -22,6 +22,7 @@ export function Settings() {
     animationLevel: 'reduced'
   });
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [resetStatus, setResetStatus] = useState<'idle' | 'resetting' | 'done'>('idle');
 
   useEffect(() => {
     loadSettings();
@@ -46,6 +47,31 @@ export function Settings() {
     setTimeout(() => {
       setSaveStatus('idle');
     }, 2000);
+  }
+
+  async function handleResetDatabase() {
+    if (!confirm('Are you sure you want to reset the database? This will reload all sample data but keep your settings.')) {
+      return;
+    }
+
+    setResetStatus('resetting');
+
+    try {
+      // Clear all tables except settings
+      await db.units.clear();
+      await db.phrases.clear();
+      await db.mathProblems.clear();
+      await db.sessionLogs.clear();
+      await db.rewards.clear();
+      await db.logs.clear();
+
+      // Reload the page to reinitialize the database with seed data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to reset database:', error);
+      alert('Failed to reset database. Please try refreshing the page.');
+      setResetStatus('idle');
+    }
   }
 
   function updateSetting<K extends keyof AppSettings>(
@@ -369,6 +395,25 @@ export function Settings() {
                   />
                 </button>
               </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Database Management</h2>
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                If you're experiencing issues with missing content or activities not loading, you can reset the database to reload all sample data.
+              </p>
+              <button
+                onClick={handleResetDatabase}
+                disabled={resetStatus === 'resetting'}
+                className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg disabled:bg-gray-300"
+              >
+                {resetStatus === 'resetting' ? 'Resetting...' : 'Reset Database & Reload Sample Data'}
+              </button>
+              <p className="text-sm text-gray-500">
+                Note: This will keep your settings but reload all units and activities.
+              </p>
             </div>
           </div>
 

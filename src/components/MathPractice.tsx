@@ -21,6 +21,7 @@ export function MathPractice() {
   const [itemsCompleted, setItemsCompleted] = useState(0);
   const [blockCounts, setBlockCounts] = useState<number[]>([]);
   const [showImmediateReward, setShowImmediateReward] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (currentUnit) {
@@ -29,7 +30,11 @@ export function MathPractice() {
   }, [currentUnit]);
 
   async function loadProblems() {
-    if (!currentUnit) return;
+    if (!currentUnit) {
+      return;
+    }
+
+    setIsLoading(true);
 
     const problemsData = await db.mathProblems
       .where('unitId')
@@ -37,15 +42,49 @@ export function MathPractice() {
       .toArray();
 
     setProblems(problemsData);
+    setIsLoading(false);
   }
 
   const currentProblem = problems[currentProblemIndex];
 
-  if (!currentProblem) {
+  if (!currentUnit) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
         <div className="text-center">
-          <p className="text-2xl text-gray-700 mb-4">Loading math problems...</p>
+          <p className="text-2xl text-gray-700 mb-4">No unit selected</p>
+          <button
+            onClick={() => setCurrentView('home')}
+            className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading || !currentProblem) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
+        <div className="text-center">
+          {isLoading ? (
+            <>
+              <p className="text-2xl text-gray-700 mb-4">Loading math problems...</p>
+              <p className="text-lg text-gray-500 mt-2">Unit: {currentUnit.title}</p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl text-gray-700 mb-4">No problems found</p>
+              <p className="text-lg text-gray-500 mt-2">Unit: {currentUnit.title}</p>
+              <p className="text-lg text-gray-500">Problems loaded: {problems.length}</p>
+              <button
+                onClick={() => setCurrentView('home')}
+                className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+              >
+                Go Home
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
@@ -236,54 +275,13 @@ export function MathPractice() {
     );
   }
 
-  if (showBreakPrompt) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-3xl text-center">
-          <h2 className="text-5xl font-bold text-gray-800 mb-4">🎉 Great Job! 🎉</h2>
-          <p className="text-3xl text-gray-600 mb-8">You've been working hard!</p>
-          <p className="text-2xl text-gray-700 mb-8">Would you like to take a calming break?</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <button
-              onClick={() => setCurrentView('break')}
-              className="p-8 bg-gradient-to-br from-purple-400 to-pink-400 text-white rounded-2xl hover:from-purple-500 hover:to-pink-500 transition-all transform hover:scale-105 shadow-xl"
-            >
-              <div className="text-6xl mb-3">🧘</div>
-              <div className="text-2xl font-bold mb-2">Calming Activities</div>
-              <div className="text-lg opacity-90">Breathing, bubbles, or colors</div>
-            </button>
-
-            <button
-              onClick={handleBreakContinue}
-              className="p-8 bg-gradient-to-br from-green-400 to-blue-400 text-white rounded-2xl hover:from-green-500 hover:to-blue-500 transition-all transform hover:scale-105 shadow-xl"
-            >
-              <div className="text-6xl mb-3">💪</div>
-              <div className="text-2xl font-bold mb-2">Quick Stretch</div>
-              <div className="text-lg opacity-90">Just a moment, then continue</div>
-            </button>
-          </div>
-
-          <button
-            onClick={handleBreakContinue}
-            className="text-xl text-gray-500 hover:text-gray-700 underline"
-          >
-            Skip break and continue →
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const answerOptions = generateAnswerOptions(currentProblem.answer, currentProblem.type);
-
-  const promptingLevel = settings?.promptingLevel || 'adaptive';
-  const audioEnabled = settings?.audioEnabled || false;
-
   // Render new activity types
   function renderActivityContent() {
+    console.log('renderActivityContent called, problem type:', currentProblem.type);
+    
     switch (currentProblem.type) {
       case 'number-line':
+        console.log('Rendering NumberLineActivity');
         return (
           <NumberLineActivity
             problem={currentProblem}
@@ -294,6 +292,7 @@ export function MathPractice() {
         );
 
       case 'ten-frame':
+        console.log('Rendering TenFrameActivity');
         return (
           <TenFrameActivity
             problem={currentProblem}
@@ -304,6 +303,7 @@ export function MathPractice() {
         );
 
       case 'touch-count':
+        console.log('Rendering TouchCountActivity');
         return (
           <TouchCountActivity
             problem={currentProblem}
@@ -313,6 +313,7 @@ export function MathPractice() {
         );
 
       default:
+        console.log('Rendering original activity');
         // Render original identification and addition activities
         return renderOriginalActivity();
     }
@@ -365,6 +366,50 @@ export function MathPractice() {
       </div>
     );
   }
+
+  if (showBreakPrompt) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
+        <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-3xl text-center">
+          <h2 className="text-5xl font-bold text-gray-800 mb-4">🎉 Great Job! 🎉</h2>
+          <p className="text-3xl text-gray-600 mb-8">You've been working hard!</p>
+          <p className="text-2xl text-gray-700 mb-8">Would you like to take a calming break?</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <button
+              onClick={() => setCurrentView('break')}
+              className="p-8 bg-gradient-to-br from-purple-400 to-pink-400 text-white rounded-2xl hover:from-purple-500 hover:to-pink-500 transition-all transform hover:scale-105 shadow-xl"
+            >
+              <div className="text-6xl mb-3">🧘</div>
+              <div className="text-2xl font-bold mb-2">Calming Activities</div>
+              <div className="text-lg opacity-90">Breathing, bubbles, or colors</div>
+            </button>
+
+            <button
+              onClick={handleBreakContinue}
+              className="p-8 bg-gradient-to-br from-green-400 to-blue-400 text-white rounded-2xl hover:from-green-500 hover:to-blue-500 transition-all transform hover:scale-105 shadow-xl"
+            >
+              <div className="text-6xl mb-3">💪</div>
+              <div className="text-2xl font-bold mb-2">Quick Stretch</div>
+              <div className="text-lg opacity-90">Just a moment, then continue</div>
+            </button>
+          </div>
+
+          <button
+            onClick={handleBreakContinue}
+            className="text-xl text-gray-500 hover:text-gray-700 underline"
+          >
+            Skip break and continue →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const answerOptions = generateAnswerOptions(currentProblem.answer, currentProblem.type);
+
+  const promptingLevel = settings?.promptingLevel || 'adaptive';
+  const audioEnabled = settings?.audioEnabled || false;
 
   return (
     <div

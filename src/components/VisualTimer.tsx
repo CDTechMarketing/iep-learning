@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 interface VisualTimerProps {
   current: number;
   total: number;

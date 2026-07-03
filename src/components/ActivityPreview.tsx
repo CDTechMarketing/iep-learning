@@ -1,5 +1,5 @@
 import { useStore } from '../store';
-import { SessionActivity, SessionLog } from '../types';
+import { SessionLog } from '../types';
 import { db } from '../db';
 import { format } from 'date-fns';
 
@@ -53,12 +53,13 @@ export function ActivityPreview() {
       setCurrentView('reading');
     } else if (currentActivity.type === 'math') {
       setCurrentView('math');
-    } else if (currentActivity.type === 'science') {
-      setCurrentView('science');
     } else if (currentActivity.type === 'break') {
       setCurrentView('break');
     } else if (currentActivity.type === 'rewards') {
       setCurrentView('rewards');
+    } else {
+      // Fallback for unknown activity types - go to home
+      setCurrentView('home');
     }
   };
 
@@ -79,7 +80,7 @@ export function ActivityPreview() {
 
           {/* Progress Dots */}
           <div className="flex justify-center gap-2">
-            {sessionPlan.activities.map((activity, index) => (
+            {sessionPlan.activities.map((activity) => (
               <div
                 key={activity.id}
                 className={`w-4 h-4 rounded-full transition-all ${
