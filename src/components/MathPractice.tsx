@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Star } from 'lucide-react';
 import { db } from '../db';
 import { MathProblem } from '../types';
@@ -9,6 +9,34 @@ import { TenFrameActivity } from './TenFrameActivity';
 import { TouchCountActivity } from './TouchCountActivity';
 import { VisualTimer } from './VisualTimer';
 import { ImmediateReward } from './ImmediateReward';
+
+// Builds four answer choices from a finite candidate pool. A bounded pool (rather
+// than rejection sampling) guarantees termination for any answer value, including
+// the 20-39 range used by the counting units.
+function generateAnswerOptions(correctAnswer: number, type: string): number[] {
+  const range = type === 'identification' ? (correctAnswer > 50 ? 10 : 5) : 3;
+
+  const candidates: number[] = [];
+  for (let n = Math.max(0, correctAnswer - range); n <= correctAnswer + range; n++) {
+    if (n !== correctAnswer) {
+      candidates.push(n);
+    }
+  }
+
+  // Small answers (e.g. 0 or 1) can leave fewer than 3 distractors; extend upward.
+  let next = correctAnswer + range + 1;
+  while (candidates.length < 3) {
+    candidates.push(next);
+    next++;
+  }
+
+  for (let i = candidates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+  }
+
+  return [correctAnswer, ...candidates.slice(0, 3)].sort((a, b) => a - b);
+}
 
 export function MathPractice() {
   const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView, setCurrentSessionLog } = useStore();
@@ -46,6 +74,18 @@ export function MathPractice() {
   }
 
   const currentProblem = problems[currentProblemIndex];
+
+  // Options are only used by identification/addition problems; the counting
+  // activities (number-line, ten-frame, touch-count) render their own choices.
+  // Memoized per problem so options stay stable across re-renders (e.g. while
+  // feedback is showing).
+  const answerOptions = useMemo(() => {
+    if (!currentProblem) return [];
+    if (currentProblem.type !== 'identification' && currentProblem.type !== 'addition') {
+      return [];
+    }
+    return generateAnswerOptions(currentProblem.answer, currentProblem.type);
+  }, [currentProblem]);
 
   if (!currentUnit) {
     return (
@@ -88,35 +128,6 @@ export function MathPractice() {
         </div>
       </div>
     );
-  }
-
-  function generateAnswerOptions(correctAnswer: number, type: string): number[] {
-    if (type === 'identification') {
-      const options = new Set<number>([correctAnswer]);
-      const range = correctAnswer > 50 ? 20 : 10;
-
-      while (options.size < 4) {
-        const offset = Math.floor(Math.random() * range) - range / 2;
-        const option = Math.max(0, correctAnswer + offset);
-        if (option !== correctAnswer) {
-          options.add(option);
-        }
-      }
-
-      return Array.from(options).sort((a, b) => a - b);
-    } else {
-      const options = new Set<number>([correctAnswer]);
-
-      while (options.size < 4) {
-        const offset = Math.floor(Math.random() * 5) - 2;
-        const option = Math.max(0, correctAnswer + offset);
-        if (option !== correctAnswer && option <= 10) {
-          options.add(option);
-        }
-      }
-
-      return Array.from(options).sort((a, b) => a - b);
-    }
   }
 
   function handleAnswerSelect(answer: number) {
@@ -277,11 +288,8 @@ export function MathPractice() {
 
   // Render new activity types
   function renderActivityContent() {
-    console.log('renderActivityContent called, problem type:', currentProblem.type);
-    
     switch (currentProblem.type) {
       case 'number-line':
-        console.log('Rendering NumberLineActivity');
         return (
           <NumberLineActivity
             problem={currentProblem}
@@ -292,7 +300,6 @@ export function MathPractice() {
         );
 
       case 'ten-frame':
-        console.log('Rendering TenFrameActivity');
         return (
           <TenFrameActivity
             problem={currentProblem}
@@ -303,7 +310,6 @@ export function MathPractice() {
         );
 
       case 'touch-count':
-        console.log('Rendering TouchCountActivity');
         return (
           <TouchCountActivity
             problem={currentProblem}
@@ -313,7 +319,6 @@ export function MathPractice() {
         );
 
       default:
-        console.log('Rendering original activity');
         // Render original identification and addition activities
         return renderOriginalActivity();
     }
@@ -405,8 +410,6 @@ export function MathPractice() {
       </div>
     );
   }
-
-  const answerOptions = generateAnswerOptions(currentProblem.answer, currentProblem.type);
 
   const promptingLevel = settings?.promptingLevel || 'adaptive';
   const audioEnabled = settings?.audioEnabled || false;
