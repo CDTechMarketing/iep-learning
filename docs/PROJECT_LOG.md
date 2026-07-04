@@ -55,7 +55,7 @@ paste-able into any coding model.
 | Phase | File | Status |
 |---|---|---|
 | 1/2 — Critical fixes & stabilization | `phase-1-2-critical-fixes.md` (8 tasks) | COMPLETED (2026-07-03, Antigravity) |
-| 3 — Refactoring & session flow | `phase-3-refactoring.md` (3 tasks) | NOT STARTED |
+| 3 — Refactoring & session flow | `phase-3-refactoring.md` (3 tasks) | IN PROGRESS — Task 1 done (2026-07-03, Gemini, reviewed by Fable); order: Task 3 next, Task 2 last |
 | 4 — Feature completion (Tier 1) | `phase-4-features.md` (5 tasks) | NOT STARTED |
 | 5 — Hardening & reports | `phase-5-hardening.md` (5 tasks) | NOT STARTED |
 
@@ -90,6 +90,11 @@ paste-able into any coding model.
 
 ## Decisions log
 
+- **2026-07-03** — Phase 3 Task 1 implemented by Gemini, reviewed by Fable: break
+  machinery deduped into `BreakPrompt.tsx` + `useBreakFlow` hook; behavior verified
+  identical in-browser (prompt at interval, calming break resumes at next item with
+  progress intact). All gates pass. Decided task order: Task 3 next, Task 2 last
+  (Task 2 is highest-risk; it builds on Task 1's refactor).
 - **2026-07-03** — Phase 1/2 Tasks 2, 3, 5, 6, 7, 8 implemented by Gemini
   (Antigravity); reviewed by Fable. Review confirmed the implementation matches the
   briefs; Fable added one missing piece (write-once guard in ActivityPreview's

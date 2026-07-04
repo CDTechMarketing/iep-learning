@@ -4,7 +4,7 @@ import { db } from '../db';
 import { Phrase } from '../types';
 import { useStore } from '../store';
 import { finishSession } from '../utils/session';
-import { SensoryBreak } from './SensoryBreak';
+import { useBreakFlow } from '../hooks/useBreakFlow';
 
 export function ReadingPractice() {
   const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView } = useStore();
@@ -12,9 +12,6 @@ export function ReadingPractice() {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [showBreakPrompt, setShowBreakPrompt] = useState(false);
-  const [showBreakActivity, setShowBreakActivity] = useState(false);
-  const [itemsCompleted, setItemsCompleted] = useState(0);
 
   useEffect(() => {
     async function loadPhrases() {
@@ -55,20 +52,19 @@ export function ReadingPractice() {
     }
   }, [currentPhraseIndex, phrases.length, handleSessionComplete]);
 
+  const { noteItemCompleted, breakUi } = useBreakFlow({
+    onContinue: moveToNextPhrase
+  });
+
   const handlePhraseComplete = useCallback(async () => {
     addStar();
     recordAttempt(true);
 
-    const newItemsCompleted = itemsCompleted + 1;
-    setItemsCompleted(newItemsCompleted);
-
-    if (settings?.breakPromptInterval && newItemsCompleted % settings.breakPromptInterval === 0) {
-      setShowBreakPrompt(true);
-      return;
+    const status = noteItemCompleted();
+    if (status === 'continue') {
+      moveToNextPhrase();
     }
-
-    moveToNextPhrase();
-  }, [addStar, recordAttempt, itemsCompleted, settings?.breakPromptInterval, moveToNextPhrase]);
+  }, [addStar, recordAttempt, noteItemCompleted, moveToNextPhrase]);
 
   const handleNextLine = useCallback(() => {
     if (currentPhrase && currentLineIndex < currentPhrase.lines.length - 1) {
@@ -100,10 +96,7 @@ export function ReadingPractice() {
     );
   }
 
-  function handleBreakContinue() {
-    setShowBreakPrompt(false);
-    moveToNextPhrase();
-  }
+
 
 
   function speakText(text: string) {
@@ -204,55 +197,8 @@ export function ReadingPractice() {
     setCurrentView('home');
   }
 
-  if (showBreakActivity) {
-    return (
-      <SensoryBreak
-        onComplete={() => {
-          setShowBreakActivity(false);
-          setShowBreakPrompt(false);
-          moveToNextPhrase();
-        }}
-      />
-    );
-  }
-
-  if (showBreakPrompt) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-3xl text-center">
-          <h2 className="text-5xl font-bold text-gray-800 mb-4">🎉 Great Job! 🎉</h2>
-          <p className="text-3xl text-gray-600 mb-8">You've been working hard!</p>
-          <p className="text-2xl text-gray-700 mb-8">Would you like to take a calming break?</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <button
-              onClick={() => setShowBreakActivity(true)}
-              className="p-8 bg-gradient-to-br from-purple-400 to-pink-400 text-white rounded-2xl hover:from-purple-500 hover:to-pink-500 transition-all transform hover:scale-105 shadow-xl"
-            >
-              <div className="text-6xl mb-3">🧘</div>
-              <div className="text-2xl font-bold mb-2">Calming Activities</div>
-              <div className="text-lg opacity-90">Breathing, bubbles, or colors</div>
-            </button>
-
-            <button
-              onClick={handleBreakContinue}
-              className="p-8 bg-gradient-to-br from-green-400 to-blue-400 text-white rounded-2xl hover:from-green-500 hover:to-blue-500 transition-all transform hover:scale-105 shadow-xl"
-            >
-              <div className="text-6xl mb-3">💪</div>
-              <div className="text-2xl font-bold mb-2">Quick Stretch</div>
-              <div className="text-lg opacity-90">Just a moment, then continue</div>
-            </button>
-          </div>
-
-          <button
-            onClick={handleBreakContinue}
-            className="text-xl text-gray-500 hover:text-gray-700 underline"
-          >
-            Skip break and continue →
-          </button>
-        </div>
-      </div>
-    );
+  if (breakUi) {
+    return breakUi;
   }
 
   return (
