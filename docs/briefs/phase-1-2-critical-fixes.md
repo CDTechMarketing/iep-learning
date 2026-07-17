@@ -154,6 +154,15 @@ fails with "Unit must have id and title".
    Add that behavior to the shared path: when a `## Phrases` entry has multiple words,
    store `lines` as the cumulative build-up (`["the", "the cat", "the cat sat"]`);
    CVC words stay single-line. This makes imported reading units behave like seeded ones.
+6. Friendlier validation errors (real-world failure observed 2026-07-03): a paste
+   missing the OPENING `---` line passes `validateMarkdown` (it substring-matches) but
+   then fails parsing with the misleading "Missing required field: unit-id". Improve
+   `validateMarkdown` to structurally check the frontmatter: if `unit-id:` appears
+   before the first standalone `---` line, or fewer than two standalone `---` lines
+   exist, return "Your paste seems to be missing the opening/closing --- line —
+   copy the whole unit including both --- lines." Also tolerate pastes wrapped in
+   ``` code fences by stripping fence lines before parsing (LLM outputs often include
+   them). Add these cases to the Task 8 parser tests.
 
 **Acceptance criteria:**
 - The same frontmatter markdown (use Task 2's sample plus a `## CVC Words` and
