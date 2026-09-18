@@ -127,6 +127,7 @@ paste-able into any coding model.
 | Doc | Status |
 |---|---|
 | `docs/PROJECT_LOG.md` | **Canonical — read first** |
+| `docs/HANDOFF_OVERVIEW.md` | Standalone project briefing for new threads/devs (architecture, data model, content pipeline, working agreements) |
 | `docs/briefs/*` | Active work specs |
 | `UNIT_TEMPLATE.md`, `LLM_LESSON_PLAN_PROMPT.md` | Accurate — the content-authoring format |
 | `short-e-et.md` | Unimported lesson unit (gets seeded in Phase 4 Task 1) |
