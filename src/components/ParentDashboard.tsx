@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Download, Sparkles, Check, Upload, X } from 'lucide-react';
 import { db } from '../db';
-import { SessionLog, Unit, Phrase, MathProblem } from '../types';
+import { SessionLog, Unit } from '../types';
 import { useStore } from '../store';
-import { parseUnitMarkdown, validateMarkdown } from '../utils/unitImporter';
+import { importUnitFromMarkdown } from '../utils/importUnit';
+import { DebugPanel } from './DebugPanel';
 import {
   BarChart,
   Bar,
@@ -16,7 +17,7 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { format, subDays, startOfWeek, startOfMonth } from 'date-fns';
+import { format, startOfWeek, startOfMonth } from 'date-fns';
 
 interface UnitPerformance {
   unitId: string;
@@ -183,7 +184,7 @@ export function ParentDashboard() {
       setChildAge(settings.childAge);
     }
 
-    let query = db.sessionLogs.toArray();
+    const query = db.sessionLogs.toArray();
     let allSessions = await query;
 
     if (selectedUnit !== 'all') {
@@ -353,69 +354,9 @@ export function ParentDashboard() {
   async function handleImportUnit() {
     setImportError('');
 
-    const validation = validateMarkdown(markdownInput);
-    if (!validation.valid) {
-      setImportError(validation.error || 'Invalid markdown format');
-      return;
-    }
-
     try {
-      const parsed = parseUnitMarkdown(markdownInput);
-
-      const existingUnit = await db.units.get(parsed.unitId);
-      if (existingUnit) {
-        setImportError(`A unit with ID "${parsed.unitId}" already exists. Please use a different unit-id.`);
-        return;
-      }
-
-      const unit: Unit = {
-        id: parsed.unitId,
-        title: parsed.title,
-        tags: parsed.tags,
-        goalStars: parsed.goalStars,
-        createdAt: new Date()
-      };
-
-      await db.units.add(unit);
-
-      if (parsed.cvcWords.length > 0 || parsed.phrases.length > 0) {
-        const phrasesToAdd: Phrase[] = [];
-
-        parsed.cvcWords.forEach((word, idx) => {
-          phrasesToAdd.push({
-            id: `${parsed.unitId}-cvc-${idx + 1}`,
-            unitId: parsed.unitId,
-            lines: [word]
-          });
-        });
-
-        parsed.phrases.forEach((phrase, idx) => {
-          phrasesToAdd.push({
-            id: `${parsed.unitId}-phrase-${idx + 1}`,
-            unitId: parsed.unitId,
-            lines: [phrase]
-          });
-        });
-
-        if (phrasesToAdd.length > 0) {
-          await db.phrases.bulkAdd(phrasesToAdd);
-        }
-      }
-
-      if (parsed.mathProblems.length > 0) {
-        const mathToAdd: MathProblem[] = parsed.mathProblems.map((prob, idx) => ({
-          id: `${parsed.unitId}-add-${idx + 1}`,
-          unitId: parsed.unitId,
-          type: 'addition' as const,
-          prompt: prob.prompt,
-          answer: prob.answer,
-          manipulatives: 'blocks' as const
-        }));
-
-        await db.mathProblems.bulkAdd(mathToAdd);
-      }
-
-      showToastNotification(`Unit '${parsed.title}' imported successfully!`);
+      const { title } = await importUnitFromMarkdown(markdownInput);
+      showToastNotification(`Unit '${title}' imported successfully!`);
       handleCloseImportModal();
       await loadData();
     } catch (error) {
@@ -730,6 +671,11 @@ goal-stars: [10, 20, 30]
               No cumulative data available for this selection
             </p>
           )}
+        </div>
+
+        {/* Debug & Error Logs Section */}
+        <div className="mt-8">
+          <DebugPanel />
         </div>
       </div>
     </div>

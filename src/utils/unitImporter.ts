@@ -1,5 +1,3 @@
-import { Unit, Phrase, MathProblem } from '../types';
-
 interface ParsedUnit {
   unitId: string;
   title: string;
@@ -8,7 +6,15 @@ interface ParsedUnit {
   tags: string[];
   cvcWords: string[];
   phrases: string[];
-  mathProblems: { prompt: string; answer: number }[];
+  mathProblems: Array<{
+    type: 'identification' | 'addition' | 'number-line' | 'ten-frame' | 'touch-count';
+    prompt: string;
+    answer: number;
+    manipulatives?: string;
+    rangeStart?: number;
+    rangeEnd?: number;
+    options?: number[];
+  }>;
 }
 
 export function parseUnitMarkdown(markdown: string): ParsedUnit {
@@ -21,7 +27,15 @@ export function parseUnitMarkdown(markdown: string): ParsedUnit {
   const tags: string[] = [];
   const cvcWords: string[] = [];
   const phrases: string[] = [];
-  const mathProblems: { prompt: string; answer: number }[] = [];
+  const mathProblems: Array<{
+    type: 'identification' | 'addition' | 'number-line' | 'ten-frame' | 'touch-count';
+    prompt: string;
+    answer: number;
+    manipulatives?: string;
+    rangeStart?: number;
+    rangeEnd?: number;
+    options?: number[];
+  }> = [];
 
   let inFrontmatter = false;
   let currentSection = '';
@@ -72,14 +86,76 @@ export function parseUnitMarkdown(markdown: string): ParsedUnit {
       } else if (currentSection === 'phrases') {
         phrases.push(content);
       } else if (currentSection === 'math') {
-        const problemMatch = content.match(/^(\d+)\+(\d+)$/);
-        if (problemMatch) {
-          const num1 = parseInt(problemMatch[1]);
-          const num2 = parseInt(problemMatch[2]);
+        // Parse different math problem types
+        
+        // Addition: 1+1
+        const additionMatch = content.match(/^(\d+)\+(\d+)$/);
+        if (additionMatch) {
+          const num1 = parseInt(additionMatch[1]);
+          const num2 = parseInt(additionMatch[2]);
           mathProblems.push({
+            type: 'addition',
             prompt: content,
-            answer: num1 + num2
+            answer: num1 + num2,
+            manipulatives: 'blocks'
           });
+          continue;
+        }
+
+        // Identification: identify:23
+        const identMatch = content.match(/^identify:(\d+)$/);
+        if (identMatch) {
+          const number = parseInt(identMatch[1]);
+          mathProblems.push({
+            type: 'identification',
+            prompt: number.toString(),
+            answer: number
+          });
+          continue;
+        }
+
+        // Number Line: number-line:23 (20-29)
+        const numberLineMatch = content.match(/^number-line:(\d+)\s*\((\d+)-(\d+)\)$/);
+        if (numberLineMatch) {
+          const answer = parseInt(numberLineMatch[1]);
+          const rangeStart = parseInt(numberLineMatch[2]);
+          const rangeEnd = parseInt(numberLineMatch[3]);
+          mathProblems.push({
+            type: 'number-line',
+            prompt: `Find ${answer}`,
+            answer,
+            rangeStart,
+            rangeEnd
+          });
+          continue;
+        }
+
+        // Ten Frame: ten-frame:23 [21,23,24,13]
+        const tenFrameMatch = content.match(/^ten-frame:(\d+)\s*\[([\d,\s]+)\]$/);
+        if (tenFrameMatch) {
+          const answer = parseInt(tenFrameMatch[1]);
+          const options = tenFrameMatch[2].split(',').map(n => parseInt(n.trim()));
+          mathProblems.push({
+            type: 'ten-frame',
+            prompt: 'How many dots?',
+            answer,
+            options
+          });
+          continue;
+        }
+
+        // Touch Count: touch-count:23 (stars|animals)
+        const touchCountMatch = content.match(/^touch-count:(\d+)\s*\((\w+)\)$/);
+        if (touchCountMatch) {
+          const answer = parseInt(touchCountMatch[1]);
+          const manipulatives = touchCountMatch[2];
+          mathProblems.push({
+            type: 'touch-count',
+            prompt: manipulatives === 'stars' ? 'Count the stars!' : 'Count the bears!',
+            answer,
+            manipulatives
+          });
+          continue;
         }
       }
     }
@@ -99,7 +175,17 @@ export function parseUnitMarkdown(markdown: string): ParsedUnit {
     tags.push('cvc', 'reading');
   }
   if (mathProblems.length > 0) {
-    tags.push('math', 'addition');
+    tags.push('math');
+    const hasAddition = mathProblems.some(p => p.type === 'addition');
+    const hasNumberSense = mathProblems.some(p =>
+      ['identification', 'number-line', 'ten-frame', 'touch-count'].includes(p.type)
+    );
+    if (hasAddition) {
+      tags.push('addition');
+    }
+    if (hasNumberSense) {
+      tags.push('number-sense');
+    }
   }
 
   return {

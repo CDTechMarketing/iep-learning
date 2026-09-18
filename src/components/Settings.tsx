@@ -13,9 +13,16 @@ export function Settings() {
     breakPromptInterval: 6,
     audioEnabled: false,
     dyslexiaFont: false,
-    childAge: 6
+    childAge: 8,
+    visualScheduleEnabled: true,
+    visualTimerEnabled: true,
+    immediateRewards: true,
+    promptingLevel: 'adaptive',
+    colorScheme: 'default',
+    animationLevel: 'reduced'
   });
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [resetStatus, setResetStatus] = useState<'idle' | 'resetting' | 'done'>('idle');
 
   useEffect(() => {
     loadSettings();
@@ -40,6 +47,56 @@ export function Settings() {
     setTimeout(() => {
       setSaveStatus('idle');
     }, 2000);
+  }
+
+  async function handleResetDatabase() {
+    if (!confirm('Are you sure you want to reload sample content? This will reset all units and activities to their defaults, but will keep your progress history and settings.')) {
+      return;
+    }
+
+    setResetStatus('resetting');
+
+    try {
+      // Clear only content tables
+      await db.units.clear();
+      await db.phrases.clear();
+      await db.mathProblems.clear();
+      await db.rewards.clear();
+
+      // Reload the page to reinitialize the database with seed data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to reload sample content:', error);
+      alert('Failed to reload sample content. Please try refreshing the page.');
+      setResetStatus('idle');
+    }
+  }
+
+  async function handleEraseAllData() {
+    const confirmation = prompt('WARNING: This will erase ALL your data, including all progress history, session logs, custom units, and settings. This cannot be undone. To proceed, please type ERASE below:');
+    if (confirmation !== 'ERASE') {
+      return;
+    }
+
+    setResetStatus('resetting');
+
+    try {
+      // Clear absolutely everything
+      await db.units.clear();
+      await db.phrases.clear();
+      await db.mathProblems.clear();
+      await db.sessionLogs.clear();
+      await db.rewards.clear();
+      await db.logs.clear();
+      await db.settings.clear();
+
+      // Reload the page to reinitialize the database with seed data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to erase all data:', error);
+      alert('Failed to erase all data. Please try refreshing the page.');
+      setResetStatus('idle');
+    }
   }
 
   function updateSetting<K extends keyof AppSettings>(
@@ -183,6 +240,138 @@ export function Settings() {
           </div>
 
           <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Special Needs Support</h2>
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Visual Schedule
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Show activity plan before starting (reduces anxiety)
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('visualScheduleEnabled', !localSettings.visualScheduleEnabled)}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.visualScheduleEnabled ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.visualScheduleEnabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Visual Timer
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Show progress bars during activities
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('visualTimerEnabled', !localSettings.visualTimerEnabled)}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.visualTimerEnabled ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.visualTimerEnabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-lg font-medium text-gray-700 mb-1">
+                    Immediate Rewards
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Show celebration after each correct answer
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateSetting('immediateRewards', !localSettings.immediateRewards)}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    localSettings.immediateRewards ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      localSettings.immediateRewards ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Prompting Level
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  How much help to provide (errorless learning)
+                </p>
+                <select
+                  value={localSettings.promptingLevel}
+                  onChange={(e) => updateSetting('promptingLevel', e.target.value as AppSettings['promptingLevel'])}
+                  className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="full">Full Prompts (always show hints)</option>
+                  <option value="partial">Partial Prompts (some hints)</option>
+                  <option value="minimal">Minimal Prompts (gentle hints)</option>
+                  <option value="independent">Independent (no prompts)</option>
+                  <option value="adaptive">Adaptive (adjusts automatically)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Animation Level
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Reduce animations if they're distracting
+                </p>
+                <select
+                  value={localSettings.animationLevel}
+                  onChange={(e) => updateSetting('animationLevel', e.target.value as AppSettings['animationLevel'])}
+                  className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="full">Full Animations</option>
+                  <option value="reduced">Reduced Animations (recommended)</option>
+                  <option value="none">No Animations</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Color Scheme
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Adjust colors for visual comfort
+                </p>
+                <select
+                  value={localSettings.colorScheme}
+                  onChange={(e) => updateSetting('colorScheme', e.target.value as AppSettings['colorScheme'])}
+                  className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="default">Default (colorful gradients)</option>
+                  <option value="high-contrast">High Contrast (easier to see)</option>
+                  <option value="pastel">Soft Pastels (calming)</option>
+                  <option value="grayscale">Grayscale (reduce stimulation)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Accessibility</h2>
 
             <div className="space-y-6">
@@ -229,6 +418,39 @@ export function Settings() {
                       localSettings.dyslexiaFont ? 'translate-x-7' : 'translate-x-1'
                     }`}
                   />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Database Management</h2>
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <p className="text-gray-600 font-medium">Reload Default Content</p>
+                <p className="text-sm text-gray-500">
+                  Reset all learning units, phrases, math problems, and sticker rewards to their defaults. Your settings and progress history (session logs) will be kept.
+                </p>
+                <button
+                  onClick={handleResetDatabase}
+                  disabled={resetStatus === 'resetting'}
+                  className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-lg disabled:bg-gray-300 font-medium"
+                >
+                  {resetStatus === 'resetting' ? 'Resetting...' : 'Reload Sample Content'}
+                </button>
+              </div>
+
+              <div className="border-t border-dashed border-gray-200 pt-6 space-y-3">
+                <p className="text-red-600 font-semibold">Danger Zone</p>
+                <p className="text-sm text-gray-500">
+                  WARNING: Completely wipes the application database, including settings, custom units, sticker collection, and session progress history.
+                </p>
+                <button
+                  onClick={handleEraseAllData}
+                  disabled={resetStatus === 'resetting'}
+                  className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg disabled:bg-gray-300 font-medium"
+                >
+                  {resetStatus === 'resetting' ? 'Erasing...' : 'Erase ALL Data'}
                 </button>
               </div>
             </div>

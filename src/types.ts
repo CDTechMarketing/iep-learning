@@ -15,10 +15,13 @@ export interface Phrase {
 export interface MathProblem {
   id: string;
   unitId: string;
-  type: 'identification' | 'addition';
+  type: 'identification' | 'addition' | 'number-line' | 'ten-frame' | 'touch-count' | 'number-order' | 'one-more-less';
   prompt: string;
   answer: number;
-  manipulatives?: 'blocks' | 'icons';
+  manipulatives?: 'blocks' | 'icons' | 'stars' | 'animals';
+  rangeStart?: number;
+  rangeEnd?: number;
+  options?: number[];
 }
 
 export interface SessionLog {
@@ -48,4 +51,30 @@ export interface AppSettings {
   dyslexiaFont: boolean;
   parentPasscode?: string;
   childAge: number;
+  visualScheduleEnabled: boolean;
+  visualTimerEnabled: boolean;
+  immediateRewards: boolean;
+  promptingLevel: 'full' | 'partial' | 'minimal' | 'independent' | 'adaptive';
+  colorScheme: 'default' | 'high-contrast' | 'pastel' | 'grayscale';
+  animationLevel: 'full' | 'reduced' | 'none';
 }
+
+export interface SessionActivity {
+  id: string;
+  type: 'reading' | 'math' | 'break' | 'rewards';
+  title: string;
+  icon: string;
+  estimatedItems: number;
+  starsToEarn: number;
+  status: 'pending' | 'in-progress' | 'completed';
+}
+
+export interface SessionPlan {
+  id: string;
+  unitId: string;
+  activities: SessionActivity[];
+  currentActivityIndex: number;
+  createdAt: Date;
+}
+
+

@@ -1,20 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Star, Volume2, VolumeX, X } from 'lucide-react';
 import { db } from '../db';
 import { Phrase } from '../types';
 import { useStore } from '../store';
-import { format } from 'date-fns';
+import { finishSession } from '../utils/session';
+import { useBreakFlow } from '../hooks/useBreakFlow';
 
 export function ReadingPractice() {
-  const { currentUnit, sessionStars, addStar, recordAttempt, settings } = useStore();
+  const { currentUnit, sessionStars, addStar, recordAttempt, settings, setCurrentView } = useStore();
   const [phrases, setPhrases] = useState<Phrase[]>([]);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [showBreakPrompt, setShowBreakPrompt] = useState(false);
-  const [itemsCompleted, setItemsCompleted] = useState(0);
 
   useEffect(() => {
+    async function loadPhrases() {
+      if (!currentUnit) return;
+
+      const phrasesData = await db.phrases
+        .where('unitId')
+        .equals(currentUnit.id)
+        .toArray();
+
+      setPhrases(phrasesData);
+    }
+
     if (currentUnit) {
       loadPhrases();
     }
@@ -26,28 +36,55 @@ export function ReadingPractice() {
     }
   }, [settings]);
 
+  const currentPhrase = phrases[currentPhraseIndex];
+
+  const handleSessionComplete = useCallback(async () => {
+    if (!currentUnit) return;
+    await finishSession(currentUnit);
+  }, [currentUnit]);
+
+  const moveToNextPhrase = useCallback(() => {
+    if (currentPhraseIndex < phrases.length - 1) {
+      setCurrentPhraseIndex(currentPhraseIndex + 1);
+      setCurrentLineIndex(0);
+    } else {
+      handleSessionComplete();
+    }
+  }, [currentPhraseIndex, phrases.length, handleSessionComplete]);
+
+  const { noteItemCompleted, breakUi } = useBreakFlow({
+    onContinue: moveToNextPhrase
+  });
+
+  const handlePhraseComplete = useCallback(async () => {
+    addStar();
+    recordAttempt(true);
+
+    const status = noteItemCompleted();
+    if (status === 'continue') {
+      moveToNextPhrase();
+    }
+  }, [addStar, recordAttempt, noteItemCompleted, moveToNextPhrase]);
+
+  const handleNextLine = useCallback(() => {
+    if (currentPhrase && currentLineIndex < currentPhrase.lines.length - 1) {
+      setCurrentLineIndex(currentLineIndex + 1);
+    } else {
+      handlePhraseComplete();
+    }
+  }, [currentLineIndex, currentPhrase, handlePhraseComplete]);
+
   useEffect(() => {
-    if (settings?.autoAdvance && currentLineIndex < currentPhrase.lines.length - 1) {
+    if (!settings?.autoAdvance || !currentPhrase) return;
+
+    if (currentLineIndex < currentPhrase.lines.length - 1) {
       const timer = setTimeout(() => {
         handleNextLine();
       }, settings.autoAdvanceDelay * 1000);
 
       return () => clearTimeout(timer);
     }
-  }, [currentLineIndex, settings?.autoAdvance, settings?.autoAdvanceDelay]);
-
-  async function loadPhrases() {
-    if (!currentUnit) return;
-
-    const phrasesData = await db.phrases
-      .where('unitId')
-      .equals(currentUnit.id)
-      .toArray();
-
-    setPhrases(phrasesData);
-  }
-
-  const currentPhrase = phrases[currentPhraseIndex];
+  }, [currentLineIndex, settings?.autoAdvance, settings?.autoAdvanceDelay, currentPhrase, handleNextLine]);
 
   if (!currentPhrase) {
     return (
@@ -59,61 +96,8 @@ export function ReadingPractice() {
     );
   }
 
-  function handleNextLine() {
-    if (currentLineIndex < currentPhrase.lines.length - 1) {
-      setCurrentLineIndex(currentLineIndex + 1);
-    } else {
-      handlePhraseComplete();
-    }
-  }
 
-  async function handlePhraseComplete() {
-    addStar();
-    recordAttempt(true);
 
-    const newItemsCompleted = itemsCompleted + 1;
-    setItemsCompleted(newItemsCompleted);
-
-    if (settings?.breakPromptInterval && newItemsCompleted % settings.breakPromptInterval === 0) {
-      setShowBreakPrompt(true);
-      return;
-    }
-
-    moveToNextPhrase();
-  }
-
-  function moveToNextPhrase() {
-    if (currentPhraseIndex < phrases.length - 1) {
-      setCurrentPhraseIndex(currentPhraseIndex + 1);
-      setCurrentLineIndex(0);
-    } else {
-      handleSessionComplete();
-    }
-  }
-
-  function handleBreakContinue() {
-    setShowBreakPrompt(false);
-    moveToNextPhrase();
-  }
-
-  async function handleSessionComplete() {
-    if (!currentUnit) return;
-
-    const sessionLog = {
-      id: `session-${Date.now()}`,
-      unitId: currentUnit.id,
-      date: format(new Date(), 'yyyy-MM-dd'),
-      starsEarned: sessionStars,
-      attempts: itemsCompleted,
-      correct: itemsCompleted,
-      milestonesReached: currentUnit.goalStars.filter(goal => sessionStars >= goal),
-      createdAt: new Date()
-    };
-
-    await db.sessionLogs.add(sessionLog);
-
-    useStore.setState({ currentView: 'rewards' });
-  }
 
   function speakText(text: string) {
     if (!audioEnabled || !('speechSynthesis' in window)) return;
@@ -210,25 +194,11 @@ export function ReadingPractice() {
   }
 
   function handleQuitSession() {
-    useStore.setState({ currentView: 'home' });
+    setCurrentView('home');
   }
 
-  if (showBreakPrompt) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50 flex items-center justify-center p-8">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-2xl text-center">
-          <h2 className="text-4xl font-bold text-gray-800 mb-6">Great Job!</h2>
-          <p className="text-2xl text-gray-600 mb-8">Time for a quick stretch break</p>
-          <div className="text-6xl mb-8">🧘‍♀️</div>
-          <button
-            onClick={handleBreakContinue}
-            className="px-12 py-6 bg-green-500 text-white text-2xl rounded-2xl hover:bg-green-600 transition-colors shadow-lg"
-          >
-            Continue
-          </button>
-        </div>
-      </div>
-    );
+  if (breakUi) {
+    return breakUi;
   }
 
   return (
