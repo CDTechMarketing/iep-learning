@@ -154,7 +154,7 @@ fails with "Unit must have id and title".
    Add that behavior to the shared path: when a `## Phrases` entry has multiple words,
    store `lines` as the cumulative build-up (`["the", "the cat", "the cat sat"]`);
    CVC words stay single-line. This makes imported reading units behave like seeded ones.
-6. Friendlier validation errors (real-world failure observed 2026-07-03): a paste
+6. Friendlier validation errors (real-world failures observed 2026-07-03): a paste
    missing the OPENING `---` line passes `validateMarkdown` (it substring-matches) but
    then fails parsing with the misleading "Missing required field: unit-id". Improve
    `validateMarkdown` to structurally check the frontmatter: if `unit-id:` appears
@@ -163,6 +163,12 @@ fails with "Unit must have id and title".
    copy the whole unit including both --- lines." Also tolerate pastes wrapped in
    ``` code fences by stripping fence lines before parsing (LLM outputs often include
    them). Add these cases to the Task 8 parser tests.
+7. Make `goal-stars` optional (second real-world LLM failure, same day): LLM-generated
+   units frequently omit it and the import hard-fails ("Missing goal-stars in
+   frontmatter"). When absent or unparseable, default to `[5, 10, 15]` in
+   `parseUnitMarkdown` and drop the goal-stars checks from `validateMarkdown` and the
+   parser's throw. `unit-id` and `title` stay required. Test both the default and an
+   explicit value.
 
 **Acceptance criteria:**
 - The same frontmatter markdown (use Task 2's sample plus a `## CVC Words` and
